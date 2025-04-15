@@ -1,21 +1,58 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AppointmentService } from "@/services/api";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { CalendarDays, CalendarPlus, Loader2 } from "lucide-react";
+import { CalendarDays, CalendarPlus, Edit, Loader2, MoreHorizontal } from "lucide-react";
 import { format, parseISO, isToday, isPast, isFuture } from "date-fns";
+import AppointmentForm from "@/components/appointments/AppointmentForm";
+import { Appointment } from "@/types";
+import { toast } from "sonner";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
 
 const Appointments = () => {
-  const { data: appointments, isLoading } = useQuery({
+  const [addAppointmentOpen, setAddAppointmentOpen] = useState(false);
+  const [editAppointment, setEditAppointment] = useState<Appointment | null>(null);
+  const queryClient = useQueryClient();
+
+  const { data: appointments, isLoading, refetch } = useQuery({
     queryKey: ["appointments"],
     queryFn: AppointmentService.getAll,
   });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: ({ id, status }: { id: number, status: 'Completed' | 'Cancelled' | 'No-Show' | 'Scheduled' }) => 
+      AppointmentService.update(id, { status }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+      toast.success("Appointment status updated");
+    },
+    onError: () => {
+      toast.error("Failed to update appointment status");
+    }
+  });
+
+  const handleAddAppointmentSuccess = () => {
+    refetch();
+  };
+
+  const handleEditAppointment = (appointment: Appointment) => {
+    setEditAppointment(appointment);
+  };
+
+  const handleStatusChange = (id: number, status: 'Completed' | 'Cancelled' | 'No-Show' | 'Scheduled') => {
+    updateStatusMutation.mutate({ id, status });
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -58,17 +95,71 @@ const Appointments = () => {
     isPast(parseISO(app.date)) && !isToday(parseISO(app.date))
   ) || [];
 
+  const renderAppointmentItem = (appointment: Appointment) => (
+    <div 
+      key={appointment.id} 
+      className="flex flex-col sm:flex-row sm:items-center sm:justify-between rounded-md border p-4 transition-colors hover:bg-muted/50"
+    >
+      <div>
+        <p className="font-medium">{appointment.patientName}</p>
+        <p className="text-sm text-muted-foreground">
+          {format(parseISO(`${appointment.date}T${appointment.time}`), 'h:mm a')}
+          {appointment.doctor && ` - Dr. ${appointment.doctor.split(' ')[1] || appointment.doctor}`}
+        </p>
+      </div>
+      <div className="mt-2 flex items-center gap-2 sm:mt-0">
+        {appointment.department && (
+          <Badge variant="outline">{appointment.department}</Badge>
+        )}
+        <Badge className={getStatusColor(appointment.status)}>
+          {appointment.status}
+        </Badge>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => handleEditAppointment(appointment)}>
+              <Edit className="mr-2 h-4 w-4" />
+              Edit
+            </DropdownMenuItem>
+            {appointment.status !== 'Completed' && (
+              <DropdownMenuItem onClick={() => handleStatusChange(appointment.id, 'Completed')}>
+                Mark as Completed
+              </DropdownMenuItem>
+            )}
+            {appointment.status !== 'Cancelled' && (
+              <DropdownMenuItem onClick={() => handleStatusChange(appointment.id, 'Cancelled')}>
+                Cancel Appointment
+              </DropdownMenuItem>
+            )}
+            {appointment.status !== 'No-Show' && appointment.status !== 'Cancelled' && (
+              <DropdownMenuItem onClick={() => handleStatusChange(appointment.id, 'No-Show')}>
+                Mark as No-Show
+              </DropdownMenuItem>
+            )}
+            {appointment.status !== 'Scheduled' && (
+              <DropdownMenuItem onClick={() => handleStatusChange(appointment.id, 'Scheduled')}>
+                Reschedule
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </div>
+  );
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-2xl font-bold tracking-tight">Appointments</h2>
-          <Link to="/appointments/new">
-            <Button>
-              <CalendarPlus className="mr-2 h-4 w-4" />
-              New Appointment
-            </Button>
-          </Link>
+          <Button onClick={() => setAddAppointmentOpen(true)}>
+            <CalendarPlus className="mr-2 h-4 w-4" />
+            New Appointment
+          </Button>
         </div>
 
         <Tabs defaultValue="today">
@@ -89,27 +180,7 @@ const Appointments = () => {
               <CardContent>
                 {todayAppointments.length > 0 ? (
                   <div className="space-y-4">
-                    {todayAppointments.map((appointment) => (
-                      <Link to={`/appointments/${appointment.id}`} key={appointment.id}>
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between rounded-md border p-4 transition-colors hover:bg-muted/50">
-                          <div>
-                            <p className="font-medium">{appointment.patientName}</p>
-                            <p className="text-sm text-muted-foreground">
-                              {format(parseISO(`${appointment.date}T${appointment.time}`), 'h:mm a')}
-                              {appointment.doctor && ` - Dr. ${appointment.doctor.split(' ')[1]}`}
-                            </p>
-                          </div>
-                          <div className="mt-2 flex items-center gap-2 sm:mt-0">
-                            {appointment.department && (
-                              <Badge variant="outline">{appointment.department}</Badge>
-                            )}
-                            <Badge className={getStatusColor(appointment.status)}>
-                              {appointment.status}
-                            </Badge>
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
+                    {todayAppointments.map(appointment => renderAppointmentItem(appointment))}
                   </div>
                 ) : (
                   <div className="flex h-32 items-center justify-center rounded-md border border-dashed">
@@ -131,27 +202,7 @@ const Appointments = () => {
               <CardContent>
                 {upcomingAppointments.length > 0 ? (
                   <div className="space-y-4">
-                    {upcomingAppointments.map((appointment) => (
-                      <Link to={`/appointments/${appointment.id}`} key={appointment.id}>
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between rounded-md border p-4 transition-colors hover:bg-muted/50">
-                          <div>
-                            <p className="font-medium">{appointment.patientName}</p>
-                            <p className="text-sm text-muted-foreground">
-                              {format(parseISO(appointment.date), 'MMM d, yyyy')} at {format(parseISO(`${appointment.date}T${appointment.time}`), 'h:mm a')}
-                              {appointment.doctor && ` - Dr. ${appointment.doctor.split(' ')[1]}`}
-                            </p>
-                          </div>
-                          <div className="mt-2 flex items-center gap-2 sm:mt-0">
-                            {appointment.department && (
-                              <Badge variant="outline">{appointment.department}</Badge>
-                            )}
-                            <Badge className={getStatusColor(appointment.status)}>
-                              {appointment.status}
-                            </Badge>
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
+                    {upcomingAppointments.map(appointment => renderAppointmentItem(appointment))}
                   </div>
                 ) : (
                   <div className="flex h-32 items-center justify-center rounded-md border border-dashed">
@@ -173,27 +224,7 @@ const Appointments = () => {
               <CardContent>
                 {pastAppointments.length > 0 ? (
                   <div className="space-y-4">
-                    {pastAppointments.slice(0, 10).map((appointment) => (
-                      <Link to={`/appointments/${appointment.id}`} key={appointment.id}>
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between rounded-md border p-4 transition-colors hover:bg-muted/50">
-                          <div>
-                            <p className="font-medium">{appointment.patientName}</p>
-                            <p className="text-sm text-muted-foreground">
-                              {format(parseISO(appointment.date), 'MMM d, yyyy')} at {format(parseISO(`${appointment.date}T${appointment.time}`), 'h:mm a')}
-                              {appointment.doctor && ` - Dr. ${appointment.doctor.split(' ')[1]}`}
-                            </p>
-                          </div>
-                          <div className="mt-2 flex items-center gap-2 sm:mt-0">
-                            {appointment.department && (
-                              <Badge variant="outline">{appointment.department}</Badge>
-                            )}
-                            <Badge className={getStatusColor(appointment.status)}>
-                              {appointment.status}
-                            </Badge>
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
+                    {pastAppointments.slice(0, 10).map(appointment => renderAppointmentItem(appointment))}
                   </div>
                 ) : (
                   <div className="flex h-32 items-center justify-center rounded-md border border-dashed">
@@ -205,6 +236,21 @@ const Appointments = () => {
           </TabsContent>
         </Tabs>
       </div>
+      
+      <AppointmentForm 
+        open={addAppointmentOpen} 
+        onOpenChange={setAddAppointmentOpen} 
+        onSuccess={handleAddAppointmentSuccess} 
+      />
+      
+      {editAppointment && (
+        <AppointmentForm 
+          open={!!editAppointment} 
+          onOpenChange={() => setEditAppointment(null)} 
+          appointment={editAppointment}
+          onSuccess={handleAddAppointmentSuccess} 
+        />
+      )}
     </DashboardLayout>
   );
 };

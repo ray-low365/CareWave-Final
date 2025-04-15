@@ -11,6 +11,19 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { ArrowLeft, Calendar, CalendarPlus, Edit, FileText, Loader2, Trash2, User } from "lucide-react";
+import EditPatientForm from "@/components/patients/EditPatientForm";
+import AppointmentForm from "@/components/appointments/AppointmentForm";
+import AddInvoiceForm from "@/components/billing/AddInvoiceForm";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const PatientDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -18,6 +31,9 @@ const PatientDetail = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [editPatientOpen, setEditPatientOpen] = useState(false);
+  const [addAppointmentOpen, setAddAppointmentOpen] = useState(false);
+  const [addInvoiceOpen, setAddInvoiceOpen] = useState(false);
 
   const { data: patient, isLoading: isPatientLoading } = useQuery({
     queryKey: ["patient", patientId],
@@ -51,12 +67,26 @@ const PatientDetail = () => {
   });
 
   const handleDelete = () => {
-    if (deleteConfirm) {
-      deleteMutation.mutate();
-    } else {
-      setDeleteConfirm(true);
-      setTimeout(() => setDeleteConfirm(false), 3000);
-    }
+    setDeleteConfirm(true);
+  };
+
+  const confirmDelete = () => {
+    deleteMutation.mutate();
+  };
+
+  const handleEditSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: ["patient", patientId] });
+    toast.success("Patient updated successfully");
+  };
+
+  const handleAppointmentSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: ["patientAppointments", patientId] });
+    toast.success("Appointment scheduled successfully");
+  };
+
+  const handleInvoiceSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: ["patientBilling", patientId] });
+    toast.success("Invoice created successfully");
   };
 
   if (isPatientLoading || isAppointmentsLoading || isBillingLoading) {
@@ -143,15 +173,13 @@ const PatientDetail = () => {
             <h2 className="text-2xl font-bold tracking-tight">Patient Details</h2>
           </div>
           <div className="flex gap-2">
-            <Link to={`/patients/${patientId}/edit`}>
-              <Button variant="outline">
-                <Edit className="mr-2 h-4 w-4" />
-                Edit
-              </Button>
-            </Link>
+            <Button variant="outline" onClick={() => setEditPatientOpen(true)}>
+              <Edit className="mr-2 h-4 w-4" />
+              Edit
+            </Button>
             <Button variant="destructive" onClick={handleDelete}>
               <Trash2 className="mr-2 h-4 w-4" />
-              {deleteConfirm ? "Confirm Delete" : "Delete"}
+              Delete
             </Button>
           </div>
         </div>
@@ -261,12 +289,10 @@ const PatientDetail = () => {
                 )}
               </CardContent>
               <CardFooter>
-                <Link to={`/appointments/new?patientId=${patientId}`} className="w-full">
-                  <Button variant="outline" className="w-full">
-                    <CalendarPlus className="mr-2 h-4 w-4" />
-                    Schedule New Appointment
-                  </Button>
-                </Link>
+                <Button variant="outline" className="w-full" onClick={() => setAddAppointmentOpen(true)}>
+                  <CalendarPlus className="mr-2 h-4 w-4" />
+                  Schedule New Appointment
+                </Button>
               </CardFooter>
             </Card>
           </TabsContent>
@@ -279,12 +305,10 @@ const PatientDetail = () => {
                     <Calendar className="h-5 w-5 text-primary" />
                     <CardTitle>Appointment History</CardTitle>
                   </div>
-                  <Link to={`/appointments/new?patientId=${patientId}`}>
-                    <Button size="sm">
-                      <CalendarPlus className="mr-2 h-4 w-4" />
-                      New Appointment
-                    </Button>
-                  </Link>
+                  <Button size="sm" onClick={() => setAddAppointmentOpen(true)}>
+                    <CalendarPlus className="mr-2 h-4 w-4" />
+                    New Appointment
+                  </Button>
                 </div>
                 <CardDescription>
                   View all appointments for this patient
@@ -331,9 +355,15 @@ const PatientDetail = () => {
           <TabsContent value="billing">
             <Card>
               <CardHeader>
-                <div className="flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-primary" />
-                  <CardTitle>Billing Records</CardTitle>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-primary" />
+                    <CardTitle>Billing Records</CardTitle>
+                  </div>
+                  <Button size="sm" onClick={() => setAddInvoiceOpen(true)}>
+                    <Plus className="mr-2 h-4 w-4" />
+                    New Invoice
+                  </Button>
                 </div>
                 <CardDescription>
                   View billing history for this patient
@@ -374,6 +404,54 @@ const PatientDetail = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Edit Patient Form */}
+      {patient && (
+        <EditPatientForm
+          open={editPatientOpen}
+          onOpenChange={setEditPatientOpen}
+          patient={patient}
+          onSuccess={handleEditSuccess}
+        />
+      )}
+
+      {/* Add Appointment Form */}
+      <AppointmentForm
+        open={addAppointmentOpen}
+        onOpenChange={setAddAppointmentOpen}
+        appointment={{ patientId, patientName: patient.name } as any}
+        onSuccess={handleAppointmentSuccess}
+      />
+
+      {/* Add Invoice Form */}
+      <AddInvoiceForm
+        open={addInvoiceOpen}
+        onOpenChange={setAddInvoiceOpen}
+        patientId={patientId}
+        onSuccess={handleInvoiceSuccess}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteConfirm} onOpenChange={setDeleteConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete {patient.name}'s record and all associated data.
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={confirmDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </DashboardLayout>
   );
 };

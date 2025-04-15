@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { BillingService } from "@/services/api";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
@@ -8,15 +8,38 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, FileText, Plus, Search, Download } from "lucide-react";
+import { Loader2, FileText, Plus, Search, Download, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { BillingRecord } from "@/types";
+import { toast } from "sonner";
+import AddInvoiceForm from "@/components/billing/AddInvoiceForm";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
 
 const Billing = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [addInvoiceOpen, setAddInvoiceOpen] = useState(false);
+  const queryClient = useQueryClient();
 
-  const { data: billingRecords, isLoading } = useQuery({
+  const { data: billingRecords, isLoading, refetch } = useQuery({
     queryKey: ["billing"],
     queryFn: BillingService.getAll,
+  });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: ({ id, status }: { id: number, status: 'Paid' | 'Pending' | 'Overdue' | 'Cancelled' }) => 
+      BillingService.update(id, { paymentStatus: status }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["billing"] });
+      toast.success("Invoice status updated");
+    },
+    onError: () => {
+      toast.error("Failed to update invoice status");
+    }
   });
 
   const filteredRecords = billingRecords?.filter((record) =>
@@ -27,6 +50,14 @@ const Billing = () => {
   const paidRecords = filteredRecords?.filter(record => record.paymentStatus === 'Paid');
   const pendingRecords = filteredRecords?.filter(record => record.paymentStatus === 'Pending');
   const overdueRecords = filteredRecords?.filter(record => record.paymentStatus === 'Overdue');
+
+  const handleAddInvoiceSuccess = () => {
+    refetch();
+  };
+
+  const handleStatusChange = (id: number, status: 'Paid' | 'Pending' | 'Overdue' | 'Cancelled') => {
+    updateStatusMutation.mutate({ id, status });
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -65,6 +96,67 @@ const Billing = () => {
     );
   }
 
+  const renderInvoiceRow = (record: BillingRecord) => (
+    <div
+      key={record.id}
+      className="grid grid-cols-1 gap-4 p-4 text-sm md:grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr]"
+    >
+      <div className="font-medium">
+        {record.invoiceNumber || `INV-${record.id}`}
+      </div>
+      <div>
+        <p>{record.patientName}</p>
+        <p className="text-xs text-muted-foreground md:hidden">
+          {formatDate(record.date)}
+        </p>
+      </div>
+      <div className="hidden md:block">
+        {formatDate(record.date)}
+      </div>
+      <div>${record.amount.toFixed(2)}</div>
+      <div>
+        <Badge className={getStatusColor(record.paymentStatus)}>
+          {record.paymentStatus}
+        </Badge>
+      </div>
+      <div className="flex justify-end space-x-2">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="icon" variant="ghost">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem>
+              <Download className="mr-2 h-4 w-4" />
+              Download
+            </DropdownMenuItem>
+            {record.paymentStatus !== 'Paid' && (
+              <DropdownMenuItem onClick={() => handleStatusChange(record.id, 'Paid')}>
+                Mark as Paid
+              </DropdownMenuItem>
+            )}
+            {record.paymentStatus !== 'Pending' && (
+              <DropdownMenuItem onClick={() => handleStatusChange(record.id, 'Pending')}>
+                Mark as Pending
+              </DropdownMenuItem>
+            )}
+            {record.paymentStatus !== 'Overdue' && (
+              <DropdownMenuItem onClick={() => handleStatusChange(record.id, 'Overdue')}>
+                Mark as Overdue
+              </DropdownMenuItem>
+            )}
+            {record.paymentStatus !== 'Cancelled' && (
+              <DropdownMenuItem onClick={() => handleStatusChange(record.id, 'Cancelled')}>
+                Cancel Invoice
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </div>
+  );
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -81,7 +173,7 @@ const Billing = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <Button>
+            <Button onClick={() => setAddInvoiceOpen(true)}>
               <Plus className="mr-2 h-4 w-4" />
               New Invoice
             </Button>
@@ -141,43 +233,7 @@ const Billing = () => {
                       </div>
                       {displayRecords && displayRecords.length > 0 ? (
                         <div className="divide-y">
-                          {displayRecords.map((record) => (
-                            <div
-                              key={record.id}
-                              className="grid grid-cols-1 gap-4 p-4 text-sm md:grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr]"
-                            >
-                              <div className="font-medium">
-                                {record.invoiceNumber || `INV-${record.id}`}
-                              </div>
-                              <div>
-                                <p>{record.patientName}</p>
-                                <p className="text-xs text-muted-foreground md:hidden">
-                                  {formatDate(record.date)}
-                                </p>
-                              </div>
-                              <div className="hidden md:block">
-                                {formatDate(record.date)}
-                              </div>
-                              <div>${record.amount.toFixed(2)}</div>
-                              <div>
-                                <Badge className={getStatusColor(record.paymentStatus)}>
-                                  {record.paymentStatus}
-                                </Badge>
-                              </div>
-                              <div className="flex justify-end space-x-2">
-                                <Button size="sm" variant="outline">
-                                  <Download className="mr-2 h-4 w-4" />
-                                  <span className="hidden sm:inline">Download</span>
-                                </Button>
-                                {record.paymentStatus !== 'Paid' && (
-                                  <Button size="sm">
-                                    <span className="hidden sm:inline">Mark as Paid</span>
-                                    <span className="sm:hidden">Pay</span>
-                                  </Button>
-                                )}
-                              </div>
-                            </div>
-                          ))}
+                          {displayRecords.map(record => renderInvoiceRow(record))}
                         </div>
                       ) : (
                         <div className="flex h-32 items-center justify-center p-4">
@@ -196,6 +252,12 @@ const Billing = () => {
           })}
         </Tabs>
       </div>
+
+      <AddInvoiceForm
+        open={addInvoiceOpen}
+        onOpenChange={setAddInvoiceOpen}
+        onSuccess={handleAddInvoiceSuccess}
+      />
     </DashboardLayout>
   );
 };
