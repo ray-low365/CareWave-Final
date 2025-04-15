@@ -1,5 +1,5 @@
 
-import { Patient, Appointment, Staff, InventoryItem, BillingRecord, DashboardStats } from '../types';
+import { Patient, Appointment, Staff, InventoryItem, BillingRecord, DashboardStats, NewPatient, NewInventoryItem } from '../types';
 import { patients, appointments, staff, inventory, billing, dashboardStats } from './mockData';
 
 // Helper function to simulate API delay
@@ -19,11 +19,11 @@ export const PatientService = {
     return { ...patient };
   },
   
-  create: async (patient: Omit<Patient, 'id'>): Promise<Patient> => {
+  create: async (patient: NewPatient): Promise<Patient> => {
     await delay(700);
     const newPatient = {
       ...patient,
-      id: Math.max(...patients.map(p => p.id)) + 1
+      id: Math.max(...patients.map(p => p.id), 0) + 1
     };
     patients.push(newPatient as Patient);
     return { ...newPatient as Patient };
@@ -70,7 +70,7 @@ export const AppointmentService = {
     await delay(700);
     const newAppointment = {
       ...appointment,
-      id: Math.max(...appointments.map(a => a.id)) + 1
+      id: Math.max(...appointments.map(a => a.id), 0) + 1
     };
     appointments.push(newAppointment as Appointment);
     return { ...newAppointment as Appointment };
@@ -112,7 +112,7 @@ export const StaffService = {
     await delay(700);
     const newMember = {
       ...member,
-      id: Math.max(...staff.map(s => s.id)) + 1
+      id: Math.max(...staff.map(s => s.id), 0) + 1
     };
     staff.push(newMember as Staff);
     return { ...newMember as Staff };
@@ -150,11 +150,11 @@ export const InventoryService = {
     return { ...item };
   },
   
-  create: async (item: Omit<InventoryItem, 'id'>): Promise<InventoryItem> => {
+  create: async (item: NewInventoryItem): Promise<InventoryItem> => {
     await delay(700);
     const newItem = {
       ...item,
-      id: Math.max(...inventory.map(i => i.id)) + 1
+      id: Math.max(...inventory.map(i => i.id), 0) + 1
     };
     inventory.push(newItem as InventoryItem);
     return { ...newItem as InventoryItem };
@@ -201,7 +201,7 @@ export const BillingService = {
     await delay(700);
     const newRecord = {
       ...record,
-      id: Math.max(...billing.map(b => b.id)) + 1
+      id: Math.max(...billing.map(b => b.id), 0) + 1
     };
     billing.push(newRecord as BillingRecord);
     return { ...newRecord as BillingRecord };

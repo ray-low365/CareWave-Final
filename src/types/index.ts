@@ -12,6 +12,18 @@ export interface Patient {
   insuranceNumber?: string;
 }
 
+export interface NewPatient {
+  name: string;
+  contactInfo: string;
+  medicalHistory: string;
+  appointmentHistory: string;
+  dateOfBirth?: string;
+  gender?: string;
+  address?: string;
+  insuranceProvider?: string;
+  insuranceNumber?: string;
+}
+
 export interface Appointment {
   id: number;
   patientId: number;
@@ -37,6 +49,17 @@ export interface Staff {
 
 export interface InventoryItem {
   id: number;
+  name: string;
+  quantity: number;
+  reorderLevel: number;
+  category?: string;
+  supplier?: string;
+  lastRestocked?: string;
+  price?: number;
+  expiryDate?: string;
+}
+
+export interface NewInventoryItem {
   name: string;
   quantity: number;
   reorderLevel: number;

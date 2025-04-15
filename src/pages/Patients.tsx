@@ -8,11 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Loader2, Plus, Search, User } from "lucide-react";
+import AddPatientForm from "@/components/patients/AddPatientForm";
 
 const Patients = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [addPatientOpen, setAddPatientOpen] = useState(false);
 
-  const { data: patients, isLoading } = useQuery({
+  const { data: patients, isLoading, refetch } = useQuery({
     queryKey: ["patients"],
     queryFn: PatientService.getAll,
   });
@@ -20,6 +22,10 @@ const Patients = () => {
   const filteredPatients = patients?.filter((patient) =>
     patient.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleAddPatientSuccess = () => {
+    refetch();
+  };
 
   if (isLoading) {
     return (
@@ -50,12 +56,10 @@ const Patients = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <Link to="/patients/new">
-              <Button>
-                <Plus className="mr-2 h-4 w-4" />
-                Add Patient
-              </Button>
-            </Link>
+            <Button onClick={() => setAddPatientOpen(true)}>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Patient
+            </Button>
           </div>
         </div>
 
@@ -95,6 +99,12 @@ const Patients = () => {
           )}
         </div>
       </div>
+      
+      <AddPatientForm 
+        open={addPatientOpen} 
+        onOpenChange={setAddPatientOpen} 
+        onSuccess={handleAddPatientSuccess} 
+      />
     </DashboardLayout>
   );
 };

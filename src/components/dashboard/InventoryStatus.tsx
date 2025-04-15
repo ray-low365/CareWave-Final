@@ -65,7 +65,11 @@ const InventoryStatus: React.FC<InventoryStatusProps> = ({ items, className }) =
                   </Badge>
                 </div>
                 <div className="space-y-1">
-                  <Progress value={percentage} className="h-2" indicatorClassName={progressColor} />
+                  <Progress 
+                    value={percentage} 
+                    className="h-2" 
+                    indicatorClassName={progressColor} 
+                  />
                   <div className="flex justify-between text-xs text-muted-foreground">
                     <span>Qty: {item.quantity}</span>
                     <span>Reorder at: {item.reorderLevel}</span>

@@ -9,13 +9,15 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Loader2, Package, Plus, Search } from "lucide-react";
+import AddInventoryItemForm from "@/components/inventory/AddInventoryItemForm";
 import { cn } from "@/lib/utils";
 
 const Inventory = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState<string | null>(null);
+  const [addItemOpen, setAddItemOpen] = useState(false);
 
-  const { data: inventory, isLoading } = useQuery({
+  const { data: inventory, isLoading, refetch } = useQuery({
     queryKey: ["inventory"],
     queryFn: InventoryService.getAll,
   });
@@ -27,7 +29,7 @@ const Inventory = () => {
   });
 
   const categories = inventory
-    ? [...new Set(inventory.map((item) => item.category))]
+    ? [...new Set(inventory.map((item) => item.category).filter(Boolean))]
     : [];
 
   const getStockLevel = (item: { quantity: number; reorderLevel: number }) => {
@@ -38,6 +40,10 @@ const Inventory = () => {
     } else {
       return { label: "In Stock", color: "bg-green-500" };
     }
+  };
+
+  const handleAddItemSuccess = () => {
+    refetch();
   };
 
   if (isLoading) {
@@ -69,7 +75,7 @@ const Inventory = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <Button>
+            <Button onClick={() => setAddItemOpen(true)}>
               <Plus className="mr-2 h-4 w-4" />
               Add Item
             </Button>
@@ -219,6 +225,12 @@ const Inventory = () => {
           </CardContent>
         </Card>
       </div>
+      
+      <AddInventoryItemForm 
+        open={addItemOpen} 
+        onOpenChange={setAddItemOpen} 
+        onSuccess={handleAddItemSuccess} 
+      />
     </DashboardLayout>
   );
 };

@@ -1,6 +1,19 @@
 
 import { Patient, Appointment, Staff, InventoryItem, BillingRecord, DashboardStats } from '../types';
 
+// Get Current and Next Few Weeks' Dates
+const today = new Date();
+const getCurrentDate = (offsetDays = 0) => {
+  const date = new Date(today);
+  date.setDate(date.getDate() + offsetDays);
+  return date.toISOString().split('T')[0];
+};
+
+// Generate Time Slots
+const generateTimeSlot = (hour: number, minute: number) => {
+  return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:00`;
+};
+
 // Mock Patients Data
 export const patients: Patient[] = [
   { id: 1, name: 'John Doe', contactInfo: 'john.doe@example.com', medicalHistory: 'History of hypertension', appointmentHistory: 'Regular checkups', dateOfBirth: '1985-05-10', gender: 'Male', address: '123 Main St, Anytown', insuranceProvider: 'Blue Cross', insuranceNumber: 'BC123456' },
@@ -14,19 +27,6 @@ export const patients: Patient[] = [
   { id: 9, name: 'Oliver Martinez', contactInfo: 'oliver.martinez@example.com', medicalHistory: 'No significant history', appointmentHistory: 'First visit', dateOfBirth: '1992-06-20', gender: 'Male', address: '852 Spruce Rd, Anywhere', insuranceProvider: 'Anthem', insuranceNumber: 'AN901234' },
   { id: 10, name: 'Sophia Harris', contactInfo: 'sophia.harris@example.com', medicalHistory: 'Anemia', appointmentHistory: 'Quarterly checkups', dateOfBirth: '1980-04-10', gender: 'Female', address: '426 Ash Ct, Sometown', insuranceProvider: 'Medicaid', insuranceNumber: 'MD567890' }
 ];
-
-// Get Current and Next Few Weeks' Dates
-const today = new Date();
-const getCurrentDate = (offsetDays = 0) => {
-  const date = new Date(today);
-  date.setDate(date.getDate() + offsetDays);
-  return date.toISOString().split('T')[0];
-};
-
-// Generate Time Slots
-const generateTimeSlot = (hour: number, minute: number) => {
-  return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:00`;
-};
 
 // Mock Appointments Data
 export const appointments: Appointment[] = [
@@ -54,49 +54,49 @@ export const appointments: Appointment[] = [
 
 // Mock Staff Data
 export const staff: Staff[] = [
-  { id: 1, name: 'Dr. Robert Smith', role: 'Doctor', department: 'Cardiology', email: 'robert.smith@carewave.com', phone: '555-123-4567', specialty: 'Heart Disease', joiningDate: '2018-03-15' },
-  { id: 2, name: 'Dr. Sarah Johnson', role: 'Doctor', department: 'Pediatrics', email: 'sarah.johnson@carewave.com', phone: '555-234-5678', specialty: 'Child Health', joiningDate: '2019-06-22' },
-  { id: 3, name: 'Kevin Williams', role: 'Administrator', department: 'Billing', email: 'kevin.williams@carewave.com', phone: '555-345-6789', joiningDate: '2017-11-10' },
-  { id: 4, name: 'Lisa Davis', role: 'Pharmacist', department: 'Pharmacy', email: 'lisa.davis@carewave.com', phone: '555-456-7890', joiningDate: '2020-01-05' },
-  { id: 5, name: 'Michael Brown', role: 'Receptionist', department: 'Front Desk', email: 'michael.brown@carewave.com', phone: '555-567-8901', joiningDate: '2021-08-30' },
-  { id: 6, name: 'Dr. Jennifer Wilson', role: 'Doctor', department: 'Neurology', email: 'jennifer.wilson@carewave.com', phone: '555-678-9012', specialty: 'Brain Disorders', joiningDate: '2019-05-17' },
-  { id: 7, name: 'Dr. James Taylor', role: 'Doctor', department: 'General Medicine', email: 'james.taylor@carewave.com', phone: '555-789-0123', specialty: 'Primary Care', joiningDate: '2020-09-12' },
-  { id: 8, name: 'Dr. Emily Moore', role: 'Doctor', department: 'Rheumatology', email: 'emily.moore@carewave.com', phone: '555-890-1234', specialty: 'Arthritis', joiningDate: '2018-07-23' },
-  { id: 9, name: 'David Anderson', role: 'Nurse', department: 'Emergency', email: 'david.anderson@carewave.com', phone: '555-901-2345', joiningDate: '2021-02-14' },
-  { id: 10, name: 'Amanda Miller', role: 'Nurse', department: 'ICU', email: 'amanda.miller@carewave.com', phone: '555-012-3456', joiningDate: '2022-04-01' }
+  { id: 1, name: 'Dr. Robert Smith', role: 'Doctor', department: 'Cardiology', email: 'robert.smith@carewave.com', phone: '555-123-4567', specialty: 'Heart Disease', joiningDate: '2020-03-15' },
+  { id: 2, name: 'Dr. Sarah Johnson', role: 'Doctor', department: 'Pediatrics', email: 'sarah.johnson@carewave.com', phone: '555-234-5678', specialty: 'Child Health', joiningDate: '2021-06-22' },
+  { id: 3, name: 'Kevin Williams', role: 'Administrator', department: 'Billing', email: 'kevin.williams@carewave.com', phone: '555-345-6789', joiningDate: '2022-11-10' },
+  { id: 4, name: 'Lisa Davis', role: 'Pharmacist', department: 'Pharmacy', email: 'lisa.davis@carewave.com', phone: '555-456-7890', joiningDate: '2022-01-05' },
+  { id: 5, name: 'Michael Brown', role: 'Receptionist', department: 'Front Desk', email: 'michael.brown@carewave.com', phone: '555-567-8901', joiningDate: '2023-08-30' },
+  { id: 6, name: 'Dr. Jennifer Wilson', role: 'Doctor', department: 'Neurology', email: 'jennifer.wilson@carewave.com', phone: '555-678-9012', specialty: 'Brain Disorders', joiningDate: '2021-05-17' },
+  { id: 7, name: 'Dr. James Taylor', role: 'Doctor', department: 'General Medicine', email: 'james.taylor@carewave.com', phone: '555-789-0123', specialty: 'Primary Care', joiningDate: '2022-09-12' },
+  { id: 8, name: 'Dr. Emily Moore', role: 'Doctor', department: 'Rheumatology', email: 'emily.moore@carewave.com', phone: '555-890-1234', specialty: 'Arthritis', joiningDate: '2020-07-23' },
+  { id: 9, name: 'David Anderson', role: 'Nurse', department: 'Emergency', email: 'david.anderson@carewave.com', phone: '555-901-2345', joiningDate: '2023-02-14' },
+  { id: 10, name: 'Amanda Miller', role: 'Nurse', department: 'ICU', email: 'amanda.miller@carewave.com', phone: '555-012-3456', joiningDate: '2023-04-01' }
 ];
 
 // Mock Inventory Data
 export const inventory: InventoryItem[] = [
-  { id: 1, name: 'Surgical Gloves', quantity: 500, reorderLevel: 100, category: 'Supplies', supplier: 'MedSupply Co.', lastRestocked: '2023-09-15', price: 0.50, expiryDate: '2025-09-15' },
-  { id: 2, name: 'Surgical Masks', quantity: 1000, reorderLevel: 200, category: 'Supplies', supplier: 'MedSupply Co.', lastRestocked: '2023-09-10', price: 0.30, expiryDate: '2025-09-10' },
-  { id: 3, name: 'Paracetamol', quantity: 300, reorderLevel: 50, category: 'Medication', supplier: 'PharmaCorp', lastRestocked: '2023-09-05', price: 5.00, expiryDate: '2024-09-05' },
-  { id: 4, name: 'Ibuprofen', quantity: 250, reorderLevel: 50, category: 'Medication', supplier: 'PharmaCorp', lastRestocked: '2023-09-01', price: 6.00, expiryDate: '2024-09-01' },
-  { id: 5, name: 'Syringes', quantity: 400, reorderLevel: 80, category: 'Supplies', supplier: 'MedEquip Inc.', lastRestocked: '2023-08-28', price: 0.75, expiryDate: '2025-08-28' },
-  { id: 6, name: 'Bandages', quantity: 600, reorderLevel: 100, category: 'Supplies', supplier: 'MedEquip Inc.', lastRestocked: '2023-08-25', price: 1.20, expiryDate: '2025-08-25' },
-  { id: 7, name: 'Antibiotics', quantity: 150, reorderLevel: 30, category: 'Medication', supplier: 'PharmaCorp', lastRestocked: '2023-08-20', price: 12.00, expiryDate: '2024-08-20' },
-  { id: 8, name: 'Disinfectant', quantity: 200, reorderLevel: 40, category: 'Supplies', supplier: 'CleanMed Ltd.', lastRestocked: '2023-08-15', price: 8.50, expiryDate: '2025-08-15' },
-  { id: 9, name: 'Thermometers', quantity: 50, reorderLevel: 10, category: 'Equipment', supplier: 'MedTech Solutions', lastRestocked: '2023-08-10', price: 15.00 },
-  { id: 10, name: 'Blood Pressure Monitors', quantity: 25, reorderLevel: 5, category: 'Equipment', supplier: 'MedTech Solutions', lastRestocked: '2023-08-05', price: 65.00 },
-  { id: 11, name: 'Gauze Pads', quantity: 350, reorderLevel: 70, category: 'Supplies', supplier: 'MedEquip Inc.', lastRestocked: '2023-08-01', price: 2.00, expiryDate: '2025-08-01' },
-  { id: 12, name: 'Insulin', quantity: 80, reorderLevel: 20, category: 'Medication', supplier: 'PharmaCorp', lastRestocked: '2023-07-28', price: 45.00, expiryDate: '2024-07-28' },
-  { id: 13, name: 'Wheelchairs', quantity: 10, reorderLevel: 2, category: 'Equipment', supplier: 'MobilityAid Co.', lastRestocked: '2023-07-20', price: 250.00 },
-  { id: 14, name: 'First Aid Kits', quantity: 30, reorderLevel: 5, category: 'Supplies', supplier: 'MedSupply Co.', lastRestocked: '2023-07-15', price: 25.00, expiryDate: '2025-07-15' },
-  { id: 15, name: 'Sterile Wipes', quantity: 450, reorderLevel: 90, category: 'Supplies', supplier: 'CleanMed Ltd.', lastRestocked: '2023-07-10', price: 0.40, expiryDate: '2025-07-10' }
+  { id: 1, name: 'Surgical Gloves', quantity: 500, reorderLevel: 100, category: 'Supplies', supplier: 'MedSupply Co.', lastRestocked: '2024-03-15', price: 0.50, expiryDate: '2026-03-15' },
+  { id: 2, name: 'Surgical Masks', quantity: 1000, reorderLevel: 200, category: 'Supplies', supplier: 'MedSupply Co.', lastRestocked: '2024-03-10', price: 0.30, expiryDate: '2026-03-10' },
+  { id: 3, name: 'Paracetamol', quantity: 300, reorderLevel: 50, category: 'Medication', supplier: 'PharmaCorp', lastRestocked: '2024-03-05', price: 5.00, expiryDate: '2025-03-05' },
+  { id: 4, name: 'Ibuprofen', quantity: 250, reorderLevel: 50, category: 'Medication', supplier: 'PharmaCorp', lastRestocked: '2024-03-01', price: 6.00, expiryDate: '2025-03-01' },
+  { id: 5, name: 'Syringes', quantity: 400, reorderLevel: 80, category: 'Supplies', supplier: 'MedEquip Inc.', lastRestocked: '2024-02-28', price: 0.75, expiryDate: '2026-02-28' },
+  { id: 6, name: 'Bandages', quantity: 600, reorderLevel: 100, category: 'Supplies', supplier: 'MedEquip Inc.', lastRestocked: '2024-02-25', price: 1.20, expiryDate: '2026-02-25' },
+  { id: 7, name: 'Antibiotics', quantity: 150, reorderLevel: 30, category: 'Medication', supplier: 'PharmaCorp', lastRestocked: '2024-02-20', price: 12.00, expiryDate: '2025-02-20' },
+  { id: 8, name: 'Disinfectant', quantity: 200, reorderLevel: 40, category: 'Supplies', supplier: 'CleanMed Ltd.', lastRestocked: '2024-02-15', price: 8.50, expiryDate: '2026-02-15' },
+  { id: 9, name: 'Thermometers', quantity: 50, reorderLevel: 10, category: 'Equipment', supplier: 'MedTech Solutions', lastRestocked: '2024-02-10', price: 15.00 },
+  { id: 10, name: 'Blood Pressure Monitors', quantity: 25, reorderLevel: 5, category: 'Equipment', supplier: 'MedTech Solutions', lastRestocked: '2024-02-05', price: 65.00 },
+  { id: 11, name: 'Gauze Pads', quantity: 350, reorderLevel: 70, category: 'Supplies', supplier: 'MedEquip Inc.', lastRestocked: '2024-02-01', price: 2.00, expiryDate: '2026-02-01' },
+  { id: 12, name: 'Insulin', quantity: 80, reorderLevel: 20, category: 'Medication', supplier: 'PharmaCorp', lastRestocked: '2024-01-28', price: 45.00, expiryDate: '2025-01-28' },
+  { id: 13, name: 'Wheelchairs', quantity: 10, reorderLevel: 2, category: 'Equipment', supplier: 'MobilityAid Co.', lastRestocked: '2024-01-20', price: 250.00 },
+  { id: 14, name: 'First Aid Kits', quantity: 30, reorderLevel: 5, category: 'Supplies', supplier: 'MedSupply Co.', lastRestocked: '2024-01-15', price: 25.00, expiryDate: '2026-01-15' },
+  { id: 15, name: 'Sterile Wipes', quantity: 450, reorderLevel: 90, category: 'Supplies', supplier: 'CleanMed Ltd.', lastRestocked: '2024-01-10', price: 0.40, expiryDate: '2026-01-10' }
 ];
 
 // Mock Billing Data
 export const billing: BillingRecord[] = [
-  { id: 1, patientId: 1, patientName: 'John Doe', amount: 150.00, paymentStatus: 'Paid', date: '2023-09-15', insuranceDetails: 'Blue Cross, 80% coverage', services: ['Consultation', 'Blood Test'], invoiceNumber: 'INV-2023-001' },
-  { id: 2, patientId: 2, patientName: 'Jane Smith', amount: 200.00, paymentStatus: 'Paid', date: '2023-09-14', insuranceDetails: 'Aetna, 70% coverage', services: ['Annual Physical', 'Vaccination'], invoiceNumber: 'INV-2023-002' },
-  { id: 3, patientId: 3, patientName: 'Alice Johnson', amount: 120.00, paymentStatus: 'Pending', date: '2023-09-13', insuranceDetails: 'UnitedHealth, 75% coverage', services: ['Diabetes Consultation'], invoiceNumber: 'INV-2023-003' },
-  { id: 4, patientId: 4, patientName: 'Bob Brown', amount: 180.00, paymentStatus: 'Pending', date: '2023-09-12', insuranceDetails: 'Cigna, 65% coverage', services: ['Pulmonary Function Test', 'Consultation'], invoiceNumber: 'INV-2023-004' },
-  { id: 5, patientId: 5, patientName: 'Charlie Davis', amount: 100.00, paymentStatus: 'Paid', date: '2023-09-11', insuranceDetails: 'Kaiser, 90% coverage', services: ['Initial Consultation'], invoiceNumber: 'INV-2023-005' },
-  { id: 6, patientId: 6, patientName: 'Emily Wilson', amount: 250.00, paymentStatus: 'Overdue', date: '2023-09-10', insuranceDetails: 'Humana, 60% coverage', services: ['Neurological Examination', 'MRI Scan'], invoiceNumber: 'INV-2023-006' },
-  { id: 7, patientId: 7, patientName: 'David Lee', amount: 165.00, paymentStatus: 'Paid', date: '2023-09-09', insuranceDetails: 'Blue Shield, 75% coverage', services: ['Cardiac Evaluation', 'ECG'], invoiceNumber: 'INV-2023-007' },
-  { id: 8, patientId: 8, patientName: 'Grace Clark', amount: 195.00, paymentStatus: 'Pending', date: '2023-09-08', insuranceDetails: 'Medicare, 80% coverage', services: ['Joint Assessment', 'X-Ray'], invoiceNumber: 'INV-2023-008' },
-  { id: 9, patientId: 9, patientName: 'Oliver Martinez', amount: 90.00, paymentStatus: 'Cancelled', date: '2023-09-07', insuranceDetails: 'Anthem, 70% coverage', services: ['Consultation (Cancelled)'], invoiceNumber: 'INV-2023-009' },
-  { id: 10, patientId: 10, patientName: 'Sophia Harris', amount: 210.00, paymentStatus: 'Paid', date: '2023-09-06', insuranceDetails: 'Medicaid, 100% coverage', services: ['Blood Work', 'Consultation'], invoiceNumber: 'INV-2023-010' }
+  { id: 1, patientId: 1, patientName: 'John Doe', amount: 150.00, paymentStatus: 'Paid', date: '2024-03-15', insuranceDetails: 'Blue Cross, 80% coverage', services: ['Consultation', 'Blood Test'], invoiceNumber: 'INV-2024-001' },
+  { id: 2, patientId: 2, patientName: 'Jane Smith', amount: 200.00, paymentStatus: 'Paid', date: '2024-03-14', insuranceDetails: 'Aetna, 70% coverage', services: ['Annual Physical', 'Vaccination'], invoiceNumber: 'INV-2024-002' },
+  { id: 3, patientId: 3, patientName: 'Alice Johnson', amount: 120.00, paymentStatus: 'Pending', date: '2024-03-13', insuranceDetails: 'UnitedHealth, 75% coverage', services: ['Diabetes Consultation'], invoiceNumber: 'INV-2024-003' },
+  { id: 4, patientId: 4, patientName: 'Bob Brown', amount: 180.00, paymentStatus: 'Pending', date: '2024-03-12', insuranceDetails: 'Cigna, 65% coverage', services: ['Pulmonary Function Test', 'Consultation'], invoiceNumber: 'INV-2024-004' },
+  { id: 5, patientId: 5, patientName: 'Charlie Davis', amount: 100.00, paymentStatus: 'Paid', date: '2024-03-11', insuranceDetails: 'Kaiser, 90% coverage', services: ['Initial Consultation'], invoiceNumber: 'INV-2024-005' },
+  { id: 6, patientId: 6, patientName: 'Emily Wilson', amount: 250.00, paymentStatus: 'Overdue', date: '2024-03-10', insuranceDetails: 'Humana, 60% coverage', services: ['Neurological Examination', 'MRI Scan'], invoiceNumber: 'INV-2024-006' },
+  { id: 7, patientId: 7, patientName: 'David Lee', amount: 165.00, paymentStatus: 'Paid', date: '2024-03-09', insuranceDetails: 'Blue Shield, 75% coverage', services: ['Cardiac Evaluation', 'ECG'], invoiceNumber: 'INV-2024-007' },
+  { id: 8, patientId: 8, patientName: 'Grace Clark', amount: 195.00, paymentStatus: 'Pending', date: '2024-03-08', insuranceDetails: 'Medicare, 80% coverage', services: ['Joint Assessment', 'X-Ray'], invoiceNumber: 'INV-2024-008' },
+  { id: 9, patientId: 9, patientName: 'Oliver Martinez', amount: 90.00, paymentStatus: 'Cancelled', date: '2024-03-07', insuranceDetails: 'Anthem, 70% coverage', services: ['Consultation (Cancelled)'], invoiceNumber: 'INV-2024-009' },
+  { id: 10, patientId: 10, patientName: 'Sophia Harris', amount: 210.00, paymentStatus: 'Paid', date: '2024-03-06', insuranceDetails: 'Medicaid, 100% coverage', services: ['Blood Work', 'Consultation'], invoiceNumber: 'INV-2024-010' }
 ];
 
 // Dashboard Statistics
