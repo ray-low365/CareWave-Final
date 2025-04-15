@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -10,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { ArrowLeft, Calendar, CalendarPlus, Edit, FileText, Loader2, Trash2, User } from "lucide-react";
+import { ArrowLeft, Calendar, CalendarPlus, Edit, FileText, Loader2, Trash2, User, Plus } from "lucide-react";
 import EditPatientForm from "@/components/patients/EditPatientForm";
 import AppointmentForm from "@/components/appointments/AppointmentForm";
 import AddInvoiceForm from "@/components/billing/AddInvoiceForm";
