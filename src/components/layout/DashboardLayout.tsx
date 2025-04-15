@@ -65,41 +65,41 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
-      {/* Sidebar */}
       <aside 
         className={cn(
-          "bg-sidebar fixed z-30 flex h-full w-64 flex-col border-r border-sidebar-border transition-all duration-300 ease-in-out",
+          "bg-sidebar shadow-medium border-r border-sidebar-border transition-all duration-300 ease-in-out",
+          "fixed z-30 flex h-full w-64 flex-col",
           isMobile && !sidebarOpen && "-translate-x-full",
           isMobile && sidebarOpen && "translate-x-0"
         )}
       >
-        <div className="flex h-14 items-center justify-between border-b border-sidebar-border px-4">
+        <div className="flex h-14 items-center justify-between border-b border-sidebar-border px-4 bg-sidebar-accent">
           <div className="flex items-center">
-            <span className="text-xl font-semibold text-primary">CareWave</span>
+            <span className="text-xl font-semibold text-sidebar-primary">CareWave</span>
           </div>
           {isMobile && (
             <Button variant="ghost" size="icon" onClick={toggleSidebar}>
-              <X size={18} />
+              <X size={18} className="text-sidebar-foreground" />
             </Button>
           )}
         </div>
 
-        {/* User info */}
-        <div className="flex flex-col px-4 py-4">
+        {/* User info with slight style adjustments */}
+        <div className="flex flex-col px-4 py-4 bg-sidebar-accent/50">
           <div className="flex items-center">
-            <div className="h-10 w-10 rounded-full bg-primary text-white flex items-center justify-center">
+            <div className="h-10 w-10 rounded-full bg-sidebar-primary text-sidebar-primary-foreground flex items-center justify-center shadow-subtle">
               {user?.name?.charAt(0)}
             </div>
             <div className="ml-3">
-              <p className="font-medium">{user?.name}</p>
-              <p className="text-sm text-muted-foreground">{user?.role}</p>
+              <p className="font-medium text-sidebar-foreground">{user?.name}</p>
+              <p className="text-sm text-sidebar-foreground/70">{user?.role}</p>
             </div>
           </div>
         </div>
 
         <Separator className="bg-sidebar-border" />
 
-        {/* Navigation */}
+        {/* Navigation with hover and active state refinements */}
         <nav className="flex-1 space-y-1 px-2 py-4">
           {navItems.map((item) => (
             <NavItem
@@ -116,7 +116,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         <div className="p-4">
           <Button
             variant="outline"
-            className="w-full justify-start gap-2"
+            className="w-full justify-start gap-2 hover:bg-sidebar-accent/30 transition-colors"
             onClick={() => {
               logout();
               closeSidebar();
@@ -128,31 +128,35 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         </div>
       </aside>
 
-      {/* Main content */}
+      {/* Main content area with refined styling */}
       <div className={cn(
         "flex flex-1 flex-col overflow-hidden transition-all duration-300 ease-in-out",
+        "bg-background shadow-sm",
         sidebarOpen && !isMobile && "ml-64",
       )}>
-        {/* Header */}
-        <header className="flex h-14 items-center border-b bg-card px-4 shadow-sm">
+        <header className="flex h-14 items-center border-b bg-card px-4 shadow-subtle">
           {isMobile && (
-            <Button variant="ghost" size="icon" onClick={toggleSidebar} className="mr-2">
-              <Menu size={18} />
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={toggleSidebar} 
+              className="mr-2 hover:bg-accent/30"
+            >
+              <Menu size={18} className="text-foreground" />
             </Button>
           )}
-          <h1 className="text-lg font-medium">
+          <h1 className="text-lg font-medium text-foreground animate-subtle-pulse">
             {navItems.find(item => item.to === location.pathname)?.label || 'Dashboard'}
           </h1>
         </header>
 
-        {/* Content area */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-background">{children}</main>
       </div>
 
-      {/* Overlay for mobile sidebar */}
+      {/* Mobile overlay with backdrop blur */}
       {isMobile && sidebarOpen && (
         <div 
-          className="fixed inset-0 z-20 bg-background/80 backdrop-blur-sm" 
+          className="fixed inset-0 z-20 bg-background/70 backdrop-blur-sm" 
           onClick={closeSidebar}
         />
       )}
