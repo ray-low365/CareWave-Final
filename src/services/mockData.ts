@@ -1,0 +1,149 @@
+
+import { Patient, Appointment, Staff, InventoryItem, BillingRecord, DashboardStats } from '../types';
+
+// Mock Patients Data
+export const patients: Patient[] = [
+  { id: 1, name: 'John Doe', contactInfo: 'john.doe@example.com', medicalHistory: 'History of hypertension', appointmentHistory: 'Regular checkups', dateOfBirth: '1985-05-10', gender: 'Male', address: '123 Main St, Anytown', insuranceProvider: 'Blue Cross', insuranceNumber: 'BC123456' },
+  { id: 2, name: 'Jane Smith', contactInfo: 'jane.smith@example.com', medicalHistory: 'Allergic to penicillin', appointmentHistory: 'Annual checkups', dateOfBirth: '1990-08-15', gender: 'Female', address: '456 Oak Ave, Somecity', insuranceProvider: 'Aetna', insuranceNumber: 'AE789012' },
+  { id: 3, name: 'Alice Johnson', contactInfo: 'alice.johnson@example.com', medicalHistory: 'Diabetic', appointmentHistory: 'Monthly checkups', dateOfBirth: '1978-11-20', gender: 'Female', address: '789 Pine Blvd, Othertown', insuranceProvider: 'UnitedHealth', insuranceNumber: 'UH345678' },
+  { id: 4, name: 'Bob Brown', contactInfo: 'bob.brown@example.com', medicalHistory: 'Asthmatic', appointmentHistory: 'Quarterly checkups', dateOfBirth: '1982-07-05', gender: 'Male', address: '321 Elm St, Anycity', insuranceProvider: 'Cigna', insuranceNumber: 'CI901234' },
+  { id: 5, name: 'Charlie Davis', contactInfo: 'charlie.davis@example.com', medicalHistory: 'No significant history', appointmentHistory: 'First visit', dateOfBirth: '1995-01-25', gender: 'Male', address: '654 Maple Dr, Somewhere', insuranceProvider: 'Kaiser', insuranceNumber: 'KP567890' },
+  { id: 6, name: 'Emily Wilson', contactInfo: 'emily.wilson@example.com', medicalHistory: 'Migraines', appointmentHistory: 'Biannual checkups', dateOfBirth: '1988-09-12', gender: 'Female', address: '987 Cedar Ln, Anyplace', insuranceProvider: 'Humana', insuranceNumber: 'HU123456' },
+  { id: 7, name: 'David Lee', contactInfo: 'david.lee@example.com', medicalHistory: 'High cholesterol', appointmentHistory: 'Annual checkups', dateOfBirth: '1975-03-30', gender: 'Male', address: '159 Walnut Ave, Someplace', insuranceProvider: 'Blue Shield', insuranceNumber: 'BS789012' },
+  { id: 8, name: 'Grace Clark', contactInfo: 'grace.clark@example.com', medicalHistory: 'Arthritis', appointmentHistory: 'Monthly checkups', dateOfBirth: '1970-12-15', gender: 'Female', address: '753 Birch St, Otherplace', insuranceProvider: 'Medicare', insuranceNumber: 'MC345678' },
+  { id: 9, name: 'Oliver Martinez', contactInfo: 'oliver.martinez@example.com', medicalHistory: 'No significant history', appointmentHistory: 'First visit', dateOfBirth: '1992-06-20', gender: 'Male', address: '852 Spruce Rd, Anywhere', insuranceProvider: 'Anthem', insuranceNumber: 'AN901234' },
+  { id: 10, name: 'Sophia Harris', contactInfo: 'sophia.harris@example.com', medicalHistory: 'Anemia', appointmentHistory: 'Quarterly checkups', dateOfBirth: '1980-04-10', gender: 'Female', address: '426 Ash Ct, Sometown', insuranceProvider: 'Medicaid', insuranceNumber: 'MD567890' }
+];
+
+// Get Current and Next Few Weeks' Dates
+const today = new Date();
+const getCurrentDate = (offsetDays = 0) => {
+  const date = new Date(today);
+  date.setDate(date.getDate() + offsetDays);
+  return date.toISOString().split('T')[0];
+};
+
+// Generate Time Slots
+const generateTimeSlot = (hour: number, minute: number) => {
+  return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:00`;
+};
+
+// Mock Appointments Data
+export const appointments: Appointment[] = [
+  { id: 1, patientId: 1, patientName: 'John Doe', date: getCurrentDate(1), time: generateTimeSlot(10, 0), status: 'Scheduled', doctor: 'Dr. Smith', department: 'Cardiology', notes: 'Regular checkup' },
+  { id: 2, patientId: 2, patientName: 'Jane Smith', date: getCurrentDate(2), time: generateTimeSlot(11, 0), status: 'Scheduled', doctor: 'Dr. Johnson', department: 'Pediatrics', notes: 'Annual physical' },
+  { id: 3, patientId: 3, patientName: 'Alice Johnson', date: getCurrentDate(3), time: generateTimeSlot(12, 0), status: 'Scheduled', doctor: 'Dr. Williams', department: 'Endocrinology', notes: 'Diabetes follow-up' },
+  { id: 4, patientId: 4, patientName: 'Bob Brown', date: getCurrentDate(4), time: generateTimeSlot(13, 0), status: 'Scheduled', doctor: 'Dr. Davis', department: 'Pulmonology', notes: 'Asthma follow-up' },
+  { id: 5, patientId: 5, patientName: 'Charlie Davis', date: getCurrentDate(5), time: generateTimeSlot(14, 0), status: 'Scheduled', doctor: 'Dr. Miller', department: 'General Medicine', notes: 'Initial consultation' },
+  { id: 6, patientId: 6, patientName: 'Emily Wilson', date: getCurrentDate(6), time: generateTimeSlot(15, 0), status: 'Scheduled', doctor: 'Dr. Wilson', department: 'Neurology', notes: 'Migraine treatment' },
+  { id: 7, patientId: 7, patientName: 'David Lee', date: getCurrentDate(7), time: generateTimeSlot(10, 30), status: 'Scheduled', doctor: 'Dr. Smith', department: 'Cardiology', notes: 'Cholesterol check' },
+  { id: 8, patientId: 8, patientName: 'Grace Clark', date: getCurrentDate(8), time: generateTimeSlot(11, 30), status: 'Scheduled', doctor: 'Dr. Moore', department: 'Rheumatology', notes: 'Arthritis treatment' },
+  { id: 9, patientId: 9, patientName: 'Oliver Martinez', date: getCurrentDate(9), time: generateTimeSlot(12, 30), status: 'Scheduled', doctor: 'Dr. Taylor', department: 'General Medicine', notes: 'Initial consultation' },
+  { id: 10, patientId: 10, patientName: 'Sophia Harris', date: getCurrentDate(10), time: generateTimeSlot(13, 30), status: 'Scheduled', doctor: 'Dr. Anderson', department: 'Hematology', notes: 'Anemia follow-up' },
+  { id: 11, patientId: 1, patientName: 'John Doe', date: getCurrentDate(0), time: generateTimeSlot(14, 30), status: 'Completed', doctor: 'Dr. Smith', department: 'Cardiology', notes: 'Blood pressure check' },
+  { id: 12, patientId: 2, patientName: 'Jane Smith', date: getCurrentDate(-1), time: generateTimeSlot(15, 30), status: 'Completed', doctor: 'Dr. Johnson', department: 'Pediatrics', notes: 'Vaccination' },
+  { id: 13, patientId: 3, patientName: 'Alice Johnson', date: getCurrentDate(13), time: generateTimeSlot(10, 0), status: 'Scheduled', doctor: 'Dr. Williams', department: 'Endocrinology', notes: 'Insulin adjustment' },
+  { id: 14, patientId: 4, patientName: 'Bob Brown', date: getCurrentDate(14), time: generateTimeSlot(11, 0), status: 'Scheduled', doctor: 'Dr. Davis', department: 'Pulmonology', notes: 'Breathing test' },
+  { id: 15, patientId: 5, patientName: 'Charlie Davis', date: getCurrentDate(15), time: generateTimeSlot(12, 0), status: 'Scheduled', doctor: 'Dr. Miller', department: 'General Medicine', notes: 'Follow-up consultation' },
+  { id: 16, patientId: 6, patientName: 'Emily Wilson', date: getCurrentDate(16), time: generateTimeSlot(13, 0), status: 'Scheduled', doctor: 'Dr. Wilson', department: 'Neurology', notes: 'MRI review' },
+  { id: 17, patientId: 7, patientName: 'David Lee', date: getCurrentDate(17), time: generateTimeSlot(14, 0), status: 'Scheduled', doctor: 'Dr. Smith', department: 'Cardiology', notes: 'ECG test' },
+  { id: 18, patientId: 8, patientName: 'Grace Clark', date: getCurrentDate(18), time: generateTimeSlot(15, 0), status: 'Scheduled', doctor: 'Dr. Moore', department: 'Rheumatology', notes: 'Joint pain assessment' },
+  { id: 19, patientId: 9, patientName: 'Oliver Martinez', date: getCurrentDate(-2), time: generateTimeSlot(10, 30), status: 'No-Show', doctor: 'Dr. Taylor', department: 'General Medicine', notes: 'Follow-up consultation' },
+  { id: 20, patientId: 10, patientName: 'Sophia Harris', date: getCurrentDate(-3), time: generateTimeSlot(11, 30), status: 'Cancelled', doctor: 'Dr. Anderson', department: 'Hematology', notes: 'Blood work' }
+];
+
+// Mock Staff Data
+export const staff: Staff[] = [
+  { id: 1, name: 'Dr. Robert Smith', role: 'Doctor', department: 'Cardiology', email: 'robert.smith@carewave.com', phone: '555-123-4567', specialty: 'Heart Disease', joiningDate: '2018-03-15' },
+  { id: 2, name: 'Dr. Sarah Johnson', role: 'Doctor', department: 'Pediatrics', email: 'sarah.johnson@carewave.com', phone: '555-234-5678', specialty: 'Child Health', joiningDate: '2019-06-22' },
+  { id: 3, name: 'Kevin Williams', role: 'Administrator', department: 'Billing', email: 'kevin.williams@carewave.com', phone: '555-345-6789', joiningDate: '2017-11-10' },
+  { id: 4, name: 'Lisa Davis', role: 'Pharmacist', department: 'Pharmacy', email: 'lisa.davis@carewave.com', phone: '555-456-7890', joiningDate: '2020-01-05' },
+  { id: 5, name: 'Michael Brown', role: 'Receptionist', department: 'Front Desk', email: 'michael.brown@carewave.com', phone: '555-567-8901', joiningDate: '2021-08-30' },
+  { id: 6, name: 'Dr. Jennifer Wilson', role: 'Doctor', department: 'Neurology', email: 'jennifer.wilson@carewave.com', phone: '555-678-9012', specialty: 'Brain Disorders', joiningDate: '2019-05-17' },
+  { id: 7, name: 'Dr. James Taylor', role: 'Doctor', department: 'General Medicine', email: 'james.taylor@carewave.com', phone: '555-789-0123', specialty: 'Primary Care', joiningDate: '2020-09-12' },
+  { id: 8, name: 'Dr. Emily Moore', role: 'Doctor', department: 'Rheumatology', email: 'emily.moore@carewave.com', phone: '555-890-1234', specialty: 'Arthritis', joiningDate: '2018-07-23' },
+  { id: 9, name: 'David Anderson', role: 'Nurse', department: 'Emergency', email: 'david.anderson@carewave.com', phone: '555-901-2345', joiningDate: '2021-02-14' },
+  { id: 10, name: 'Amanda Miller', role: 'Nurse', department: 'ICU', email: 'amanda.miller@carewave.com', phone: '555-012-3456', joiningDate: '2022-04-01' }
+];
+
+// Mock Inventory Data
+export const inventory: InventoryItem[] = [
+  { id: 1, name: 'Surgical Gloves', quantity: 500, reorderLevel: 100, category: 'Supplies', supplier: 'MedSupply Co.', lastRestocked: '2023-09-15', price: 0.50, expiryDate: '2025-09-15' },
+  { id: 2, name: 'Surgical Masks', quantity: 1000, reorderLevel: 200, category: 'Supplies', supplier: 'MedSupply Co.', lastRestocked: '2023-09-10', price: 0.30, expiryDate: '2025-09-10' },
+  { id: 3, name: 'Paracetamol', quantity: 300, reorderLevel: 50, category: 'Medication', supplier: 'PharmaCorp', lastRestocked: '2023-09-05', price: 5.00, expiryDate: '2024-09-05' },
+  { id: 4, name: 'Ibuprofen', quantity: 250, reorderLevel: 50, category: 'Medication', supplier: 'PharmaCorp', lastRestocked: '2023-09-01', price: 6.00, expiryDate: '2024-09-01' },
+  { id: 5, name: 'Syringes', quantity: 400, reorderLevel: 80, category: 'Supplies', supplier: 'MedEquip Inc.', lastRestocked: '2023-08-28', price: 0.75, expiryDate: '2025-08-28' },
+  { id: 6, name: 'Bandages', quantity: 600, reorderLevel: 100, category: 'Supplies', supplier: 'MedEquip Inc.', lastRestocked: '2023-08-25', price: 1.20, expiryDate: '2025-08-25' },
+  { id: 7, name: 'Antibiotics', quantity: 150, reorderLevel: 30, category: 'Medication', supplier: 'PharmaCorp', lastRestocked: '2023-08-20', price: 12.00, expiryDate: '2024-08-20' },
+  { id: 8, name: 'Disinfectant', quantity: 200, reorderLevel: 40, category: 'Supplies', supplier: 'CleanMed Ltd.', lastRestocked: '2023-08-15', price: 8.50, expiryDate: '2025-08-15' },
+  { id: 9, name: 'Thermometers', quantity: 50, reorderLevel: 10, category: 'Equipment', supplier: 'MedTech Solutions', lastRestocked: '2023-08-10', price: 15.00 },
+  { id: 10, name: 'Blood Pressure Monitors', quantity: 25, reorderLevel: 5, category: 'Equipment', supplier: 'MedTech Solutions', lastRestocked: '2023-08-05', price: 65.00 },
+  { id: 11, name: 'Gauze Pads', quantity: 350, reorderLevel: 70, category: 'Supplies', supplier: 'MedEquip Inc.', lastRestocked: '2023-08-01', price: 2.00, expiryDate: '2025-08-01' },
+  { id: 12, name: 'Insulin', quantity: 80, reorderLevel: 20, category: 'Medication', supplier: 'PharmaCorp', lastRestocked: '2023-07-28', price: 45.00, expiryDate: '2024-07-28' },
+  { id: 13, name: 'Wheelchairs', quantity: 10, reorderLevel: 2, category: 'Equipment', supplier: 'MobilityAid Co.', lastRestocked: '2023-07-20', price: 250.00 },
+  { id: 14, name: 'First Aid Kits', quantity: 30, reorderLevel: 5, category: 'Supplies', supplier: 'MedSupply Co.', lastRestocked: '2023-07-15', price: 25.00, expiryDate: '2025-07-15' },
+  { id: 15, name: 'Sterile Wipes', quantity: 450, reorderLevel: 90, category: 'Supplies', supplier: 'CleanMed Ltd.', lastRestocked: '2023-07-10', price: 0.40, expiryDate: '2025-07-10' }
+];
+
+// Mock Billing Data
+export const billing: BillingRecord[] = [
+  { id: 1, patientId: 1, patientName: 'John Doe', amount: 150.00, paymentStatus: 'Paid', date: '2023-09-15', insuranceDetails: 'Blue Cross, 80% coverage', services: ['Consultation', 'Blood Test'], invoiceNumber: 'INV-2023-001' },
+  { id: 2, patientId: 2, patientName: 'Jane Smith', amount: 200.00, paymentStatus: 'Paid', date: '2023-09-14', insuranceDetails: 'Aetna, 70% coverage', services: ['Annual Physical', 'Vaccination'], invoiceNumber: 'INV-2023-002' },
+  { id: 3, patientId: 3, patientName: 'Alice Johnson', amount: 120.00, paymentStatus: 'Pending', date: '2023-09-13', insuranceDetails: 'UnitedHealth, 75% coverage', services: ['Diabetes Consultation'], invoiceNumber: 'INV-2023-003' },
+  { id: 4, patientId: 4, patientName: 'Bob Brown', amount: 180.00, paymentStatus: 'Pending', date: '2023-09-12', insuranceDetails: 'Cigna, 65% coverage', services: ['Pulmonary Function Test', 'Consultation'], invoiceNumber: 'INV-2023-004' },
+  { id: 5, patientId: 5, patientName: 'Charlie Davis', amount: 100.00, paymentStatus: 'Paid', date: '2023-09-11', insuranceDetails: 'Kaiser, 90% coverage', services: ['Initial Consultation'], invoiceNumber: 'INV-2023-005' },
+  { id: 6, patientId: 6, patientName: 'Emily Wilson', amount: 250.00, paymentStatus: 'Overdue', date: '2023-09-10', insuranceDetails: 'Humana, 60% coverage', services: ['Neurological Examination', 'MRI Scan'], invoiceNumber: 'INV-2023-006' },
+  { id: 7, patientId: 7, patientName: 'David Lee', amount: 165.00, paymentStatus: 'Paid', date: '2023-09-09', insuranceDetails: 'Blue Shield, 75% coverage', services: ['Cardiac Evaluation', 'ECG'], invoiceNumber: 'INV-2023-007' },
+  { id: 8, patientId: 8, patientName: 'Grace Clark', amount: 195.00, paymentStatus: 'Pending', date: '2023-09-08', insuranceDetails: 'Medicare, 80% coverage', services: ['Joint Assessment', 'X-Ray'], invoiceNumber: 'INV-2023-008' },
+  { id: 9, patientId: 9, patientName: 'Oliver Martinez', amount: 90.00, paymentStatus: 'Cancelled', date: '2023-09-07', insuranceDetails: 'Anthem, 70% coverage', services: ['Consultation (Cancelled)'], invoiceNumber: 'INV-2023-009' },
+  { id: 10, patientId: 10, patientName: 'Sophia Harris', amount: 210.00, paymentStatus: 'Paid', date: '2023-09-06', insuranceDetails: 'Medicaid, 100% coverage', services: ['Blood Work', 'Consultation'], invoiceNumber: 'INV-2023-010' }
+];
+
+// Dashboard Statistics
+export const dashboardStats: DashboardStats = {
+  totalPatients: patients.length,
+  totalAppointments: appointments.length,
+  todayAppointments: appointments.filter(app => app.date === getCurrentDate(0)).length,
+  upcomingAppointments: appointments.filter(app => new Date(app.date) > new Date() && app.status === 'Scheduled').length,
+  monthlyPatientVisits: [
+    { month: 'Jan', visits: 45 },
+    { month: 'Feb', visits: 52 },
+    { month: 'Mar', visits: 49 },
+    { month: 'Apr', visits: 62 },
+    { month: 'May', visits: 55 },
+    { month: 'Jun', visits: 60 },
+    { month: 'Jul', visits: 68 },
+    { month: 'Aug', visits: 72 },
+    { month: 'Sep', visits: 80 },
+    { month: 'Oct', visits: 76 },
+    { month: 'Nov', visits: 70 },
+    { month: 'Dec', visits: 65 }
+  ],
+  departmentDistribution: [
+    { department: 'Cardiology', patients: 25 },
+    { department: 'Pediatrics', patients: 18 },
+    { department: 'Neurology', patients: 15 },
+    { department: 'Orthopedics', patients: 12 },
+    { department: 'General Medicine', patients: 30 }
+  ],
+  appointmentStatus: [
+    { status: 'Scheduled', count: 16 },
+    { status: 'Completed', count: 2 },
+    { status: 'Cancelled', count: 1 },
+    { status: 'No-Show', count: 1 }
+  ],
+  revenueData: [
+    { month: 'Jan', amount: 12500 },
+    { month: 'Feb', amount: 13200 },
+    { month: 'Mar', amount: 12800 },
+    { month: 'Apr', amount: 15600 },
+    { month: 'May', amount: 14500 },
+    { month: 'Jun', amount: 15000 },
+    { month: 'Jul', amount: 16200 },
+    { month: 'Aug', amount: 17500 },
+    { month: 'Sep', amount: 18000 },
+    { month: 'Oct', amount: 17200 },
+    { month: 'Nov', amount: 16500 },
+    { month: 'Dec', amount: 15800 }
+  ]
+};
