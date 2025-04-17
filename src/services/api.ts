@@ -449,7 +449,34 @@ export const BillingService = {
       paymentStatus: record.payment_status as 'Paid' | 'Pending' | 'Overdue' | 'Cancelled',
       date: record.date,
       insuranceDetails: record.insurance_details,
-      services: record.services,
+      services: [], // Need to implement a separate query for this
+      invoiceNumber: record.invoice_number
+    }));
+  },
+
+  async getByPatientId(patientId: string): Promise<BillingRecord[]> {
+    const { data, error } = await supabase
+      .from('billing')
+      .select(`
+        *,
+        patients:patient_id (name)
+      `)
+      .eq('patient_id', patientId);
+    
+    if (error) {
+      console.error(`Error fetching billing records for patient ${patientId}:`, error);
+      throw error;
+    }
+
+    return data.map(record => ({
+      id: record.id,
+      patientId: record.patient_id,
+      patientName: record.patients?.name || 'Unknown',
+      amount: record.amount,
+      paymentStatus: record.payment_status as 'Paid' | 'Pending' | 'Overdue' | 'Cancelled',
+      date: record.date,
+      insuranceDetails: record.insurance_details,
+      services: [], // Need to implement a separate query for this
       invoiceNumber: record.invoice_number
     }));
   },
@@ -463,7 +490,6 @@ export const BillingService = {
         payment_status: record.paymentStatus,
         date: record.date,
         insurance_details: record.insuranceDetails,
-        services: record.services,
         invoice_number: record.invoiceNumber
       })
       .select(`
@@ -477,6 +503,22 @@ export const BillingService = {
       throw error;
     }
 
+    // Insert services if provided
+    if (record.services && record.services.length > 0) {
+      const serviceInserts = record.services.map(service => ({
+        billing_id: data.id,
+        service_name: service
+      }));
+
+      const { error: servicesError } = await supabase
+        .from('billing_services')
+        .insert(serviceInserts);
+
+      if (servicesError) {
+        console.error('Error adding billing services:', servicesError);
+      }
+    }
+
     return {
       id: data.id,
       patientId: data.patient_id,
@@ -485,9 +527,78 @@ export const BillingService = {
       paymentStatus: data.payment_status as 'Paid' | 'Pending' | 'Overdue' | 'Cancelled',
       date: data.date,
       insuranceDetails: data.insurance_details,
-      services: data.services,
+      services: record.services || [],
       invoiceNumber: data.invoice_number
     };
+  },
+
+  async update(id: string, record: Partial<BillingRecord>): Promise<BillingRecord> {
+    const updateData: any = {};
+    
+    if (record.patientId) updateData.patient_id = record.patientId;
+    if (record.amount !== undefined) updateData.amount = record.amount;
+    if (record.paymentStatus) updateData.payment_status = record.paymentStatus;
+    if (record.date) updateData.date = record.date;
+    if (record.insuranceDetails !== undefined) updateData.insurance_details = record.insuranceDetails;
+    if (record.invoiceNumber !== undefined) updateData.invoice_number = record.invoiceNumber;
+    
+    const { data, error } = await supabase
+      .from('billing')
+      .update(updateData)
+      .eq('id', id)
+      .select(`
+        *,
+        patients:patient_id (name)
+      `)
+      .single();
+    
+    if (error) {
+      console.error(`Error updating billing record with id ${id}:`, error);
+      throw error;
+    }
+
+    // Update services if provided
+    if (record.services && record.services.length > 0) {
+      // First delete existing services
+      await supabase
+        .from('billing_services')
+        .delete()
+        .eq('billing_id', id);
+      
+      // Then insert new ones
+      const serviceInserts = record.services.map(service => ({
+        billing_id: id,
+        service_name: service
+      }));
+
+      await supabase
+        .from('billing_services')
+        .insert(serviceInserts);
+    }
+
+    return {
+      id: data.id,
+      patientId: data.patient_id,
+      patientName: data.patients?.name || 'Unknown',
+      amount: data.amount,
+      paymentStatus: data.payment_status as 'Paid' | 'Pending' | 'Overdue' | 'Cancelled',
+      date: data.date,
+      insuranceDetails: data.insurance_details,
+      services: record.services || [],
+      invoiceNumber: data.invoice_number
+    };
+  },
+
+  async delete(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('billing')
+      .delete()
+      .eq('id', id);
+    
+    if (error) {
+      console.error(`Error deleting billing record with id ${id}:`, error);
+      throw error;
+    }
   }
 };
 

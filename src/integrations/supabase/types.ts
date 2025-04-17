@@ -13,7 +13,10 @@ export type Database = {
         Row: {
           created_at: string
           date: string
+          department: string | null
+          doctor: string | null
           id: string
+          notes: string | null
           patient_id: string
           status: string
           time: string
@@ -22,7 +25,10 @@ export type Database = {
         Insert: {
           created_at?: string
           date: string
+          department?: string | null
+          doctor?: string | null
           id?: string
+          notes?: string | null
           patient_id: string
           status: string
           time: string
@@ -31,7 +37,10 @@ export type Database = {
         Update: {
           created_at?: string
           date?: string
+          department?: string | null
+          doctor?: string | null
           id?: string
+          notes?: string | null
           patient_id?: string
           status?: string
           time?: string
@@ -47,13 +56,132 @@ export type Database = {
           },
         ]
       }
+      billing: {
+        Row: {
+          amount: number
+          created_at: string
+          date: string
+          id: string
+          insurance_details: string | null
+          invoice_number: string | null
+          patient_id: string | null
+          payment_status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          date: string
+          id?: string
+          insurance_details?: string | null
+          invoice_number?: string | null
+          patient_id?: string | null
+          payment_status: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          date?: string
+          id?: string
+          insurance_details?: string | null
+          invoice_number?: string | null
+          patient_id?: string | null
+          payment_status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      billing_services: {
+        Row: {
+          billing_id: string | null
+          created_at: string
+          id: string
+          service_name: string
+        }
+        Insert: {
+          billing_id?: string | null
+          created_at?: string
+          id?: string
+          service_name: string
+        }
+        Update: {
+          billing_id?: string | null
+          created_at?: string
+          id?: string
+          service_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_services_billing_id_fkey"
+            columns: ["billing_id"]
+            isOneToOne: false
+            referencedRelation: "billing"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory: {
+        Row: {
+          category: string | null
+          created_at: string
+          expiry_date: string | null
+          id: string
+          last_restocked: string | null
+          name: string
+          price: number | null
+          quantity: number
+          reorder_level: number
+          supplier: string | null
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          last_restocked?: string | null
+          name: string
+          price?: number | null
+          quantity: number
+          reorder_level: number
+          supplier?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          expiry_date?: string | null
+          id?: string
+          last_restocked?: string | null
+          name?: string
+          price?: number | null
+          quantity?: number
+          reorder_level?: number
+          supplier?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       patients: {
         Row: {
           address: string
           appointment_history: string | null
           contact_info: string
           created_at: string
+          date_of_birth: string | null
+          gender: string | null
           id: string
+          insurance_number: string | null
+          insurance_provider: string | null
           medical_history: string | null
           name: string
           updated_at: string
@@ -63,7 +191,11 @@ export type Database = {
           appointment_history?: string | null
           contact_info: string
           created_at?: string
+          date_of_birth?: string | null
+          gender?: string | null
           id?: string
+          insurance_number?: string | null
+          insurance_provider?: string | null
           medical_history?: string | null
           name: string
           updated_at?: string
@@ -73,7 +205,11 @@ export type Database = {
           appointment_history?: string | null
           contact_info?: string
           created_at?: string
+          date_of_birth?: string | null
+          gender?: string | null
           id?: string
+          insurance_number?: string | null
+          insurance_provider?: string | null
           medical_history?: string | null
           name?: string
           updated_at?: string
@@ -84,22 +220,37 @@ export type Database = {
         Row: {
           created_at: string
           department: string
+          email: string | null
           id: string
+          joining_date: string | null
+          name: string | null
+          phone: string | null
           role: string
+          specialty: string | null
           updated_at: string
         }
         Insert: {
           created_at?: string
           department: string
+          email?: string | null
           id?: string
+          joining_date?: string | null
+          name?: string | null
+          phone?: string | null
           role: string
+          specialty?: string | null
           updated_at?: string
         }
         Update: {
           created_at?: string
           department?: string
+          email?: string | null
           id?: string
+          joining_date?: string | null
+          name?: string | null
+          phone?: string | null
           role?: string
+          specialty?: string | null
           updated_at?: string
         }
         Relationships: []
