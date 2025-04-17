@@ -17,14 +17,14 @@ export const PatientService = {
       id: p.id,
       name: p.name,
       contactInfo: p.contact_info,
-      medicalHistory: p.medical_history || '',
-      appointmentHistory: p.appointment_history || '',
+      medicalHistory: p.medical_history,
+      appointmentHistory: p.appointment_history,
       address: p.address || '',
       // Map other fields as needed
     }));
   },
   
-  getById: async (id: number): Promise<Patient> => {
+  getById: async (id: string): Promise<Patient> => {
     const { data, error } = await supabase
       .from('patients')
       .select('*')
@@ -37,8 +37,8 @@ export const PatientService = {
       id: data.id,
       name: data.name,
       contactInfo: data.contact_info,
-      medicalHistory: data.medical_history || '',
-      appointmentHistory: data.appointment_history || '',
+      medicalHistory: data.medical_history,
+      appointmentHistory: data.appointment_history,
       address: data.address || '',
       // Map other fields as needed
     };
@@ -64,14 +64,14 @@ export const PatientService = {
       id: data.id,
       name: data.name,
       contactInfo: data.contact_info,
-      medicalHistory: data.medical_history || '',
-      appointmentHistory: data.appointment_history || '',
+      medicalHistory: data.medical_history,
+      appointmentHistory: data.appointment_history,
       address: data.address || '',
       // Map other fields as needed
     };
   },
   
-  update: async (id: number, patient: Partial<Patient>): Promise<Patient> => {
+  update: async (id: string, patient: Partial<Patient>): Promise<Patient> => {
     const { data, error } = await supabase
       .from('patients')
       .update({
@@ -92,14 +92,14 @@ export const PatientService = {
       id: data.id,
       name: data.name,
       contactInfo: data.contact_info,
-      medicalHistory: data.medical_history || '',
-      appointmentHistory: data.appointment_history || '',
+      medicalHistory: data.medical_history,
+      appointmentHistory: data.appointment_history,
       address: data.address || '',
       // Map other fields as needed
     };
   },
   
-  delete: async (id: number): Promise<void> => {
+  delete: async (id: string): Promise<void> => {
     const { error } = await supabase
       .from('patients')
       .delete()
@@ -127,14 +127,14 @@ export const AppointmentService = {
       patientName: a.patients?.name || 'Unknown Patient',
       date: a.date,
       time: a.time,
-      status: a.status,
-      doctor: a.doctor || '',
-      department: a.department || '',
-      notes: a.notes || ''
+      status: a.status as 'Scheduled' | 'Completed' | 'Cancelled' | 'No-Show',
+      doctor: '', // These fields don't exist in the DB yet
+      department: '',
+      notes: ''
     }));
   },
   
-  getById: async (id: number): Promise<Appointment> => {
+  getById: async (id: string): Promise<Appointment> => {
     const { data, error } = await supabase
       .from('appointments')
       .select(`
@@ -152,14 +152,14 @@ export const AppointmentService = {
       patientName: data.patients?.name || 'Unknown Patient',
       date: data.date,
       time: data.time,
-      status: data.status,
-      doctor: data.doctor || '',
-      department: data.department || '',
-      notes: data.notes || ''
+      status: data.status as 'Scheduled' | 'Completed' | 'Cancelled' | 'No-Show',
+      doctor: '', // These fields don't exist in the DB yet
+      department: '',
+      notes: ''
     };
   },
   
-  getByPatientId: async (patientId: number): Promise<Appointment[]> => {
+  getByPatientId: async (patientId: string): Promise<Appointment[]> => {
     const { data, error } = await supabase
       .from('appointments')
       .select(`
@@ -176,10 +176,10 @@ export const AppointmentService = {
       patientName: a.patients?.name || 'Unknown Patient',
       date: a.date,
       time: a.time,
-      status: a.status,
-      doctor: a.doctor || '',
-      department: a.department || '',
-      notes: a.notes || ''
+      status: a.status as 'Scheduled' | 'Completed' | 'Cancelled' | 'No-Show',
+      doctor: '', // These fields don't exist in the DB yet
+      department: '',
+      notes: ''
     }));
   },
   
@@ -190,10 +190,8 @@ export const AppointmentService = {
         patient_id: appointment.patientId,
         date: appointment.date,
         time: appointment.time,
-        status: appointment.status,
-        doctor: appointment.doctor,
-        department: appointment.department,
-        notes: appointment.notes
+        status: appointment.status
+        // doctor, department, notes not in DB schema yet
       })
       .select(`
         *,
@@ -209,24 +207,22 @@ export const AppointmentService = {
       patientName: data.patients?.name || 'Unknown Patient',
       date: data.date,
       time: data.time,
-      status: data.status,
-      doctor: data.doctor || '',
-      department: data.department || '',
-      notes: data.notes || ''
+      status: data.status as 'Scheduled' | 'Completed' | 'Cancelled' | 'No-Show',
+      doctor: '', // These fields don't exist in the DB yet
+      department: '',
+      notes: ''
     };
   },
   
-  update: async (id: number, appointment: Partial<Appointment>): Promise<Appointment> => {
+  update: async (id: string, appointment: Partial<Appointment>): Promise<Appointment> => {
     const { data, error } = await supabase
       .from('appointments')
       .update({
         patient_id: appointment.patientId,
         date: appointment.date,
         time: appointment.time,
-        status: appointment.status,
-        doctor: appointment.doctor,
-        department: appointment.department,
-        notes: appointment.notes
+        status: appointment.status
+        // doctor, department, notes not in DB schema yet
       })
       .eq('id', id)
       .select(`
@@ -243,14 +239,14 @@ export const AppointmentService = {
       patientName: data.patients?.name || 'Unknown Patient',
       date: data.date,
       time: data.time,
-      status: data.status,
-      doctor: data.doctor || '',
-      department: data.department || '',
-      notes: data.notes || ''
+      status: data.status as 'Scheduled' | 'Completed' | 'Cancelled' | 'No-Show',
+      doctor: '', // These fields don't exist in the DB yet
+      department: '',
+      notes: ''
     };
   },
   
-  delete: async (id: number): Promise<void> => {
+  delete: async (id: string): Promise<void> => {
     const { error } = await supabase
       .from('appointments')
       .delete()
@@ -274,10 +270,10 @@ export const StaffService = {
       name: s.name || '',
       role: s.role,
       department: s.department,
-      email: s.email || '',
-      phone: s.phone || '',
-      specialty: s.specialty || '',
-      joiningDate: s.joining_date || ''
+      email: '',
+      phone: '',
+      specialty: '',
+      joiningDate: ''
     }));
   },
   
@@ -326,8 +322,8 @@ export const StaffService = {
       department: data.department,
       email: data.email || '',
       phone: data.phone || '',
-      specialty: data.specialty || '',
-      joiningDate: data.joining_date || ''
+      specialty: member.specialty || '',
+      joiningDate: member.joiningDate || ''
     };
   },
   
@@ -356,8 +352,8 @@ export const StaffService = {
       department: data.department,
       email: data.email || '',
       phone: data.phone || '',
-      specialty: data.specialty || '',
-      joiningDate: data.joining_date || ''
+      specialty: member.specialty || '',
+      joiningDate: member.joiningDate || ''
     };
   },
   
@@ -383,10 +379,13 @@ export const InventoryService = {
     return data.map(i => ({
       id: i.id,
       name: i.name,
-      description: i.description,
       quantity: i.quantity,
+      reorderLevel: i.reorderLevel,
+      category: i.category,
+      supplier: i.supplier,
+      lastRestocked: i.lastRestocked,
       price: i.price,
-      category: i.category
+      expiryDate: i.expiryDate
     }));
   },
   
@@ -402,10 +401,13 @@ export const InventoryService = {
     return {
       id: data.id,
       name: data.name,
-      description: data.description,
       quantity: data.quantity,
+      reorderLevel: data.reorderLevel,
+      category: data.category,
+      supplier: data.supplier,
+      lastRestocked: data.lastRestocked,
       price: data.price,
-      category: data.category
+      expiryDate: data.expiryDate
     };
   },
   
@@ -414,10 +416,13 @@ export const InventoryService = {
       .from('inventory')
       .insert({
         name: item.name,
-        description: item.description,
         quantity: item.quantity,
+        reorderLevel: item.reorderLevel,
+        category: item.category,
+        supplier: item.supplier,
+        lastRestocked: item.lastRestocked,
         price: item.price,
-        category: item.category
+        expiryDate: item.expiryDate
       })
       .select()
       .single();
@@ -427,10 +432,13 @@ export const InventoryService = {
     return {
       id: data.id,
       name: data.name,
-      description: data.description,
       quantity: data.quantity,
-      price: data.price,
-      category: data.category
+      reorderLevel: data.reorderLevel,
+      category: item.category,
+      supplier: item.supplier,
+      lastRestocked: item.lastRestocked,
+      price: item.price,
+      expiryDate: item.expiryDate
     };
   },
   
@@ -439,10 +447,13 @@ export const InventoryService = {
       .from('inventory')
       .update({
         name: item.name,
-        description: item.description,
         quantity: item.quantity,
+        reorderLevel: item.reorderLevel,
+        category: item.category,
+        supplier: item.supplier,
+        lastRestocked: item.lastRestocked,
         price: item.price,
-        category: item.category
+        expiryDate: item.expiryDate
       })
       .eq('id', id)
       .select()
@@ -453,10 +464,13 @@ export const InventoryService = {
     return {
       id: data.id,
       name: data.name,
-      description: data.description,
       quantity: data.quantity,
-      price: data.price,
-      category: data.category
+      reorderLevel: data.reorderLevel,
+      category: item.category,
+      supplier: item.supplier,
+      lastRestocked: item.lastRestocked,
+      price: item.price,
+      expiryDate: item.expiryDate
     };
   },
   
@@ -482,10 +496,13 @@ export const BillingService = {
     return data.map(b => ({
       id: b.id,
       patientId: b.patient_id,
+      patientName: b.patientName,
       amount: b.amount,
+      paymentStatus: b.paymentStatus,
       date: b.date,
-      status: b.status,
-      notes: b.notes
+      insuranceDetails: b.insuranceDetails,
+      services: b.services,
+      invoiceNumber: b.invoiceNumber
     }));
   },
   
@@ -501,10 +518,13 @@ export const BillingService = {
     return {
       id: data.id,
       patientId: data.patient_id,
+      patientName: data.patientName,
       amount: data.amount,
+      paymentStatus: data.paymentStatus,
       date: data.date,
-      status: data.status,
-      notes: data.notes
+      insuranceDetails: data.insuranceDetails,
+      services: data.services,
+      invoiceNumber: data.invoiceNumber
     };
   },
   
@@ -519,11 +539,14 @@ export const BillingService = {
     return data.map(b => ({
       id: b.id,
       patientId: b.patient_id,
+      patientName: b.patientName,
       amount: b.amount,
+      paymentStatus: b.paymentStatus,
       date: b.date,
-      status: b.status,
-      notes: b.notes
-    }));
+      insuranceDetails: b.insuranceDetails,
+      services: b.services,
+      invoiceNumber: b.invoiceNumber
+    };
   },
   
   create: async (record: Omit<BillingRecord, 'id'>): Promise<BillingRecord> => {
@@ -533,8 +556,10 @@ export const BillingService = {
         patient_id: record.patientId,
         amount: record.amount,
         date: record.date,
-        status: record.status,
-        notes: record.notes
+        paymentStatus: record.paymentStatus,
+        insuranceDetails: record.insuranceDetails,
+        services: record.services,
+        invoiceNumber: record.invoiceNumber
       })
       .select()
       .single();
@@ -544,10 +569,13 @@ export const BillingService = {
     return {
       id: data.id,
       patientId: data.patient_id,
+      patientName: data.patientName,
       amount: data.amount,
+      paymentStatus: data.paymentStatus,
       date: data.date,
-      status: data.status,
-      notes: data.notes
+      insuranceDetails: data.insuranceDetails,
+      services: data.services,
+      invoiceNumber: data.invoiceNumber
     };
   },
   
@@ -558,8 +586,10 @@ export const BillingService = {
         patient_id: record.patientId,
         amount: record.amount,
         date: record.date,
-        status: record.status,
-        notes: record.notes
+        paymentStatus: record.paymentStatus,
+        insuranceDetails: record.insuranceDetails,
+        services: record.services,
+        invoiceNumber: record.invoiceNumber
       })
       .eq('id', id)
       .select()
@@ -570,10 +600,13 @@ export const BillingService = {
     return {
       id: data.id,
       patientId: data.patient_id,
+      patientName: data.patientName,
       amount: data.amount,
+      paymentStatus: data.paymentStatus,
       date: data.date,
-      status: data.status,
-      notes: data.notes
+      insuranceDetails: data.insuranceDetails,
+      services: data.services,
+      invoiceNumber: data.invoiceNumber
     };
   },
   
