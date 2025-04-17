@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -26,7 +27,7 @@ import {
 
 const PatientDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const patientId = Number(id);
+  const patientId = id || ""; // Ensure patientId is a string
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [deleteConfirm, setDeleteConfirm] = useState(false);
@@ -37,19 +38,19 @@ const PatientDetail = () => {
   const { data: patient, isLoading: isPatientLoading } = useQuery({
     queryKey: ["patient", patientId],
     queryFn: () => PatientService.getById(patientId),
-    enabled: !!patientId && !isNaN(patientId),
+    enabled: !!patientId,
   });
 
   const { data: appointments, isLoading: isAppointmentsLoading } = useQuery({
     queryKey: ["patientAppointments", patientId],
     queryFn: () => AppointmentService.getByPatientId(patientId),
-    enabled: !!patientId && !isNaN(patientId),
+    enabled: !!patientId,
   });
 
   const { data: billingRecords, isLoading: isBillingLoading } = useQuery({
     queryKey: ["patientBilling", patientId],
     queryFn: () => BillingService.getByPatientId(patientId),
-    enabled: !!patientId && !isNaN(patientId),
+    enabled: !!patientId,
   });
 
   const deleteMutation = useMutation({
