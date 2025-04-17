@@ -1,4 +1,3 @@
-
 import { Patient, Appointment, Staff, InventoryItem, BillingRecord, DashboardStats } from '../types';
 
 // Get Current and Next Few Weeks' Dates
@@ -14,42 +13,42 @@ const generateTimeSlot = (hour: number, minute: number) => {
   return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:00`;
 };
 
-// Mock Patients Data
+// Mock Patients Data with Kenyan and Ugandan names
 export const patients: Patient[] = [
-  { id: 1, name: 'John Doe', contactInfo: 'john.doe@example.com', medicalHistory: 'History of hypertension', appointmentHistory: 'Regular checkups', dateOfBirth: '1985-05-10', gender: 'Male', address: '123 Main St, Anytown', insuranceProvider: 'Blue Cross', insuranceNumber: 'BC123456' },
-  { id: 2, name: 'Jane Smith', contactInfo: 'jane.smith@example.com', medicalHistory: 'Allergic to penicillin', appointmentHistory: 'Annual checkups', dateOfBirth: '1990-08-15', gender: 'Female', address: '456 Oak Ave, Somecity', insuranceProvider: 'Aetna', insuranceNumber: 'AE789012' },
-  { id: 3, name: 'Alice Johnson', contactInfo: 'alice.johnson@example.com', medicalHistory: 'Diabetic', appointmentHistory: 'Monthly checkups', dateOfBirth: '1978-11-20', gender: 'Female', address: '789 Pine Blvd, Othertown', insuranceProvider: 'UnitedHealth', insuranceNumber: 'UH345678' },
-  { id: 4, name: 'Bob Brown', contactInfo: 'bob.brown@example.com', medicalHistory: 'Asthmatic', appointmentHistory: 'Quarterly checkups', dateOfBirth: '1982-07-05', gender: 'Male', address: '321 Elm St, Anycity', insuranceProvider: 'Cigna', insuranceNumber: 'CI901234' },
-  { id: 5, name: 'Charlie Davis', contactInfo: 'charlie.davis@example.com', medicalHistory: 'No significant history', appointmentHistory: 'First visit', dateOfBirth: '1995-01-25', gender: 'Male', address: '654 Maple Dr, Somewhere', insuranceProvider: 'Kaiser', insuranceNumber: 'KP567890' },
-  { id: 6, name: 'Emily Wilson', contactInfo: 'emily.wilson@example.com', medicalHistory: 'Migraines', appointmentHistory: 'Biannual checkups', dateOfBirth: '1988-09-12', gender: 'Female', address: '987 Cedar Ln, Anyplace', insuranceProvider: 'Humana', insuranceNumber: 'HU123456' },
-  { id: 7, name: 'David Lee', contactInfo: 'david.lee@example.com', medicalHistory: 'High cholesterol', appointmentHistory: 'Annual checkups', dateOfBirth: '1975-03-30', gender: 'Male', address: '159 Walnut Ave, Someplace', insuranceProvider: 'Blue Shield', insuranceNumber: 'BS789012' },
-  { id: 8, name: 'Grace Clark', contactInfo: 'grace.clark@example.com', medicalHistory: 'Arthritis', appointmentHistory: 'Monthly checkups', dateOfBirth: '1970-12-15', gender: 'Female', address: '753 Birch St, Otherplace', insuranceProvider: 'Medicare', insuranceNumber: 'MC345678' },
-  { id: 9, name: 'Oliver Martinez', contactInfo: 'oliver.martinez@example.com', medicalHistory: 'No significant history', appointmentHistory: 'First visit', dateOfBirth: '1992-06-20', gender: 'Male', address: '852 Spruce Rd, Anywhere', insuranceProvider: 'Anthem', insuranceNumber: 'AN901234' },
-  { id: 10, name: 'Sophia Harris', contactInfo: 'sophia.harris@example.com', medicalHistory: 'Anemia', appointmentHistory: 'Quarterly checkups', dateOfBirth: '1980-04-10', gender: 'Female', address: '426 Ash Ct, Sometown', insuranceProvider: 'Medicaid', insuranceNumber: 'MD567890' }
+  { id: 1, name: 'Wafula Otieno', contactInfo: 'wafula.otieno@gmail.com', medicalHistory: 'History of hypertension', appointmentHistory: 'Regular checkups', dateOfBirth: '1985-05-10', gender: 'Male', address: '123 Moi Avenue, Nairobi', insuranceProvider: 'Jubilee Insurance', insuranceNumber: 'JB123456' },
+  { id: 2, name: 'Akinyi Wanjiku', contactInfo: 'akinyi.wanjiku@gmail.com', medicalHistory: 'Allergic to penicillin', appointmentHistory: 'Annual checkups', dateOfBirth: '1990-08-15', gender: 'Female', address: '456 Kenyatta Avenue, Nakuru', insuranceProvider: 'NHIF', insuranceNumber: 'NH789012' },
+  { id: 3, name: 'Namukwaya Adeke', contactInfo: 'namukwaya.adeke@gmail.com', medicalHistory: 'Diabetic', appointmentHistory: 'Monthly checkups', dateOfBirth: '1978-11-20', gender: 'Female', address: '789 Tom Mboya Street, Mombasa', insuranceProvider: 'AAR', insuranceNumber: 'AAR345678' },
+  { id: 4, name: 'Ochen Mutua', contactInfo: 'ochen.mutua@gmail.com', medicalHistory: 'Asthmatic', appointmentHistory: 'Quarterly checkups', dateOfBirth: '1982-07-05', gender: 'Male', address: '321 Uhuru Highway, Kisumu', insuranceProvider: 'Britam', insuranceNumber: 'BR901234' },
+  { id: 5, name: 'Kato Kamau', contactInfo: 'kato.kamau@gmail.com', medicalHistory: 'No significant history', appointmentHistory: 'First visit', dateOfBirth: '1995-01-25', gender: 'Male', address: '654 Ngong Road, Nairobi', insuranceProvider: 'Resolution Insurance', insuranceNumber: 'RI567890' },
+  { id: 6, name: 'Wambui Atieno', contactInfo: 'wambui.atieno@gmail.com', medicalHistory: 'Migraines', appointmentHistory: 'Biannual checkups', dateOfBirth: '1988-09-12', gender: 'Female', address: '987 Kimathi Street, Nyeri', insuranceProvider: 'CIC Insurance', insuranceNumber: 'CIC123456' },
+  { id: 7, name: 'Okello Mwangi', contactInfo: 'okello.mwangi@gmail.com', medicalHistory: 'High cholesterol', appointmentHistory: 'Annual checkups', dateOfBirth: '1975-03-30', gender: 'Male', address: '159 Oginga Odinga Road, Kakamega', insuranceProvider: 'Heritage Insurance', insuranceNumber: 'HI789012' },
+  { id: 8, name: 'Nafula Omondi', contactInfo: 'nafula.omondi@gmail.com', medicalHistory: 'Arthritis', appointmentHistory: 'Monthly checkups', dateOfBirth: '1970-12-15', gender: 'Female', address: '753 Ronald Ngala Street, Eldoret', insuranceProvider: 'NHIF', insuranceNumber: 'NH345678' },
+  { id: 9, name: 'Mugisha Githinji', contactInfo: 'mugisha.githinji@gmail.com', medicalHistory: 'No significant history', appointmentHistory: 'First visit', dateOfBirth: '1992-06-20', gender: 'Male', address: '852 Moi Avenue, Machakos', insuranceProvider: 'Jubilee Insurance', insuranceNumber: 'JB901234' },
+  { id: 10, name: 'Amina Waweru', contactInfo: 'amina.waweru@gmail.com', medicalHistory: 'Anemia', appointmentHistory: 'Quarterly checkups', dateOfBirth: '1980-04-10', gender: 'Female', address: '426 Haile Selassie Avenue, Nairobi', insuranceProvider: 'NHIF', insuranceNumber: 'NH567890' }
 ];
 
-// Mock Appointments Data
+// Mock Appointments Data - Updating to use the new patient names
 export const appointments: Appointment[] = [
-  { id: 1, patientId: 1, patientName: 'John Doe', date: getCurrentDate(1), time: generateTimeSlot(10, 0), status: 'Scheduled', doctor: 'Dr. Smith', department: 'Cardiology', notes: 'Regular checkup' },
-  { id: 2, patientId: 2, patientName: 'Jane Smith', date: getCurrentDate(2), time: generateTimeSlot(11, 0), status: 'Scheduled', doctor: 'Dr. Johnson', department: 'Pediatrics', notes: 'Annual physical' },
-  { id: 3, patientId: 3, patientName: 'Alice Johnson', date: getCurrentDate(3), time: generateTimeSlot(12, 0), status: 'Scheduled', doctor: 'Dr. Williams', department: 'Endocrinology', notes: 'Diabetes follow-up' },
-  { id: 4, patientId: 4, patientName: 'Bob Brown', date: getCurrentDate(4), time: generateTimeSlot(13, 0), status: 'Scheduled', doctor: 'Dr. Davis', department: 'Pulmonology', notes: 'Asthma follow-up' },
-  { id: 5, patientId: 5, patientName: 'Charlie Davis', date: getCurrentDate(5), time: generateTimeSlot(14, 0), status: 'Scheduled', doctor: 'Dr. Miller', department: 'General Medicine', notes: 'Initial consultation' },
-  { id: 6, patientId: 6, patientName: 'Emily Wilson', date: getCurrentDate(6), time: generateTimeSlot(15, 0), status: 'Scheduled', doctor: 'Dr. Wilson', department: 'Neurology', notes: 'Migraine treatment' },
-  { id: 7, patientId: 7, patientName: 'David Lee', date: getCurrentDate(7), time: generateTimeSlot(10, 30), status: 'Scheduled', doctor: 'Dr. Smith', department: 'Cardiology', notes: 'Cholesterol check' },
-  { id: 8, patientId: 8, patientName: 'Grace Clark', date: getCurrentDate(8), time: generateTimeSlot(11, 30), status: 'Scheduled', doctor: 'Dr. Moore', department: 'Rheumatology', notes: 'Arthritis treatment' },
-  { id: 9, patientId: 9, patientName: 'Oliver Martinez', date: getCurrentDate(9), time: generateTimeSlot(12, 30), status: 'Scheduled', doctor: 'Dr. Taylor', department: 'General Medicine', notes: 'Initial consultation' },
-  { id: 10, patientId: 10, patientName: 'Sophia Harris', date: getCurrentDate(10), time: generateTimeSlot(13, 30), status: 'Scheduled', doctor: 'Dr. Anderson', department: 'Hematology', notes: 'Anemia follow-up' },
-  { id: 11, patientId: 1, patientName: 'John Doe', date: getCurrentDate(0), time: generateTimeSlot(14, 30), status: 'Completed', doctor: 'Dr. Smith', department: 'Cardiology', notes: 'Blood pressure check' },
-  { id: 12, patientId: 2, patientName: 'Jane Smith', date: getCurrentDate(-1), time: generateTimeSlot(15, 30), status: 'Completed', doctor: 'Dr. Johnson', department: 'Pediatrics', notes: 'Vaccination' },
-  { id: 13, patientId: 3, patientName: 'Alice Johnson', date: getCurrentDate(13), time: generateTimeSlot(10, 0), status: 'Scheduled', doctor: 'Dr. Williams', department: 'Endocrinology', notes: 'Insulin adjustment' },
-  { id: 14, patientId: 4, patientName: 'Bob Brown', date: getCurrentDate(14), time: generateTimeSlot(11, 0), status: 'Scheduled', doctor: 'Dr. Davis', department: 'Pulmonology', notes: 'Breathing test' },
-  { id: 15, patientId: 5, patientName: 'Charlie Davis', date: getCurrentDate(15), time: generateTimeSlot(12, 0), status: 'Scheduled', doctor: 'Dr. Miller', department: 'General Medicine', notes: 'Follow-up consultation' },
-  { id: 16, patientId: 6, patientName: 'Emily Wilson', date: getCurrentDate(16), time: generateTimeSlot(13, 0), status: 'Scheduled', doctor: 'Dr. Wilson', department: 'Neurology', notes: 'MRI review' },
-  { id: 17, patientId: 7, patientName: 'David Lee', date: getCurrentDate(17), time: generateTimeSlot(14, 0), status: 'Scheduled', doctor: 'Dr. Smith', department: 'Cardiology', notes: 'ECG test' },
-  { id: 18, patientId: 8, patientName: 'Grace Clark', date: getCurrentDate(18), time: generateTimeSlot(15, 0), status: 'Scheduled', doctor: 'Dr. Moore', department: 'Rheumatology', notes: 'Joint pain assessment' },
-  { id: 19, patientId: 9, patientName: 'Oliver Martinez', date: getCurrentDate(-2), time: generateTimeSlot(10, 30), status: 'No-Show', doctor: 'Dr. Taylor', department: 'General Medicine', notes: 'Follow-up consultation' },
-  { id: 20, patientId: 10, patientName: 'Sophia Harris', date: getCurrentDate(-3), time: generateTimeSlot(11, 30), status: 'Cancelled', doctor: 'Dr. Anderson', department: 'Hematology', notes: 'Blood work' }
+  { id: 1, patientId: 1, patientName: 'Wafula Otieno', date: getCurrentDate(1), time: generateTimeSlot(10, 0), status: 'Scheduled', doctor: 'Dr. Smith', department: 'Cardiology', notes: 'Regular checkup' },
+  { id: 2, patientId: 2, patientName: 'Akinyi Wanjiku', date: getCurrentDate(2), time: generateTimeSlot(11, 0), status: 'Scheduled', doctor: 'Dr. Johnson', department: 'Pediatrics', notes: 'Annual physical' },
+  { id: 3, patientId: 3, patientName: 'Namukwaya Adeke', date: getCurrentDate(3), time: generateTimeSlot(12, 0), status: 'Scheduled', doctor: 'Dr. Williams', department: 'Endocrinology', notes: 'Diabetes follow-up' },
+  { id: 4, patientId: 4, patientName: 'Ochen Mutua', date: getCurrentDate(4), time: generateTimeSlot(13, 0), status: 'Scheduled', doctor: 'Dr. Davis', department: 'Pulmonology', notes: 'Asthma follow-up' },
+  { id: 5, patientId: 5, patientName: 'Kato Kamau', date: getCurrentDate(5), time: generateTimeSlot(14, 0), status: 'Scheduled', doctor: 'Dr. Miller', department: 'General Medicine', notes: 'Initial consultation' },
+  { id: 6, patientId: 6, patientName: 'Wambui Atieno', date: getCurrentDate(6), time: generateTimeSlot(15, 0), status: 'Scheduled', doctor: 'Dr. Wilson', department: 'Neurology', notes: 'Migraine treatment' },
+  { id: 7, patientId: 7, patientName: 'Okello Mwangi', date: getCurrentDate(7), time: generateTimeSlot(10, 30), status: 'Scheduled', doctor: 'Dr. Smith', department: 'Cardiology', notes: 'Cholesterol check' },
+  { id: 8, patientId: 8, patientName: 'Nafula Omondi', date: getCurrentDate(8), time: generateTimeSlot(11, 30), status: 'Scheduled', doctor: 'Dr. Moore', department: 'Rheumatology', notes: 'Arthritis treatment' },
+  { id: 9, patientId: 9, patientName: 'Mugisha Githinji', date: getCurrentDate(9), time: generateTimeSlot(12, 30), status: 'Scheduled', doctor: 'Dr. Taylor', department: 'General Medicine', notes: 'Initial consultation' },
+  { id: 10, patientId: 10, patientName: 'Amina Waweru', date: getCurrentDate(10), time: generateTimeSlot(13, 30), status: 'Scheduled', doctor: 'Dr. Anderson', department: 'Hematology', notes: 'Anemia follow-up' },
+  { id: 11, patientId: 1, patientName: 'Wafula Otieno', date: getCurrentDate(0), time: generateTimeSlot(14, 30), status: 'Completed', doctor: 'Dr. Smith', department: 'Cardiology', notes: 'Blood pressure check' },
+  { id: 12, patientId: 2, patientName: 'Akinyi Wanjiku', date: getCurrentDate(-1), time: generateTimeSlot(15, 30), status: 'Completed', doctor: 'Dr. Johnson', department: 'Pediatrics', notes: 'Vaccination' },
+  { id: 13, patientId: 3, patientName: 'Namukwaya Adeke', date: getCurrentDate(13), time: generateTimeSlot(10, 0), status: 'Scheduled', doctor: 'Dr. Williams', department: 'Endocrinology', notes: 'Insulin adjustment' },
+  { id: 14, patientId: 4, patientName: 'Ochen Mutua', date: getCurrentDate(14), time: generateTimeSlot(11, 0), status: 'Scheduled', doctor: 'Dr. Davis', department: 'Pulmonology', notes: 'Breathing test' },
+  { id: 15, patientId: 5, patientName: 'Kato Kamau', date: getCurrentDate(15), time: generateTimeSlot(12, 0), status: 'Scheduled', doctor: 'Dr. Miller', department: 'General Medicine', notes: 'Follow-up consultation' },
+  { id: 16, patientId: 6, patientName: 'Wambui Atieno', date: getCurrentDate(16), time: generateTimeSlot(13, 0), status: 'Scheduled', doctor: 'Dr. Wilson', department: 'Neurology', notes: 'MRI review' },
+  { id: 17, patientId: 7, patientName: 'Okello Mwangi', date: getCurrentDate(17), time: generateTimeSlot(14, 0), status: 'Scheduled', doctor: 'Dr. Smith', department: 'Cardiology', notes: 'ECG test' },
+  { id: 18, patientId: 8, patientName: 'Nafula Omondi', date: getCurrentDate(18), time: generateTimeSlot(15, 0), status: 'Scheduled', doctor: 'Dr. Moore', department: 'Rheumatology', notes: 'Joint pain assessment' },
+  { id: 19, patientId: 9, patientName: 'Mugisha Githinji', date: getCurrentDate(-2), time: generateTimeSlot(10, 30), status: 'No-Show', doctor: 'Dr. Taylor', department: 'General Medicine', notes: 'Follow-up consultation' },
+  { id: 20, patientId: 10, patientName: 'Amina Waweru', date: getCurrentDate(-3), time: generateTimeSlot(11, 30), status: 'Cancelled', doctor: 'Dr. Anderson', department: 'Hematology', notes: 'Blood work' }
 ];
 
 // Mock Staff Data
@@ -85,18 +84,18 @@ export const inventory: InventoryItem[] = [
   { id: 15, name: 'Sterile Wipes', quantity: 450, reorderLevel: 90, category: 'Supplies', supplier: 'CleanMed Ltd.', lastRestocked: '2024-01-10', price: 0.40, expiryDate: '2026-01-10' }
 ];
 
-// Mock Billing Data
+// Mock Billing Data - Updating to use the new patient names
 export const billing: BillingRecord[] = [
-  { id: 1, patientId: 1, patientName: 'John Doe', amount: 150.00, paymentStatus: 'Paid', date: '2024-03-15', insuranceDetails: 'Blue Cross, 80% coverage', services: ['Consultation', 'Blood Test'], invoiceNumber: 'INV-2024-001' },
-  { id: 2, patientId: 2, patientName: 'Jane Smith', amount: 200.00, paymentStatus: 'Paid', date: '2024-03-14', insuranceDetails: 'Aetna, 70% coverage', services: ['Annual Physical', 'Vaccination'], invoiceNumber: 'INV-2024-002' },
-  { id: 3, patientId: 3, patientName: 'Alice Johnson', amount: 120.00, paymentStatus: 'Pending', date: '2024-03-13', insuranceDetails: 'UnitedHealth, 75% coverage', services: ['Diabetes Consultation'], invoiceNumber: 'INV-2024-003' },
-  { id: 4, patientId: 4, patientName: 'Bob Brown', amount: 180.00, paymentStatus: 'Pending', date: '2024-03-12', insuranceDetails: 'Cigna, 65% coverage', services: ['Pulmonary Function Test', 'Consultation'], invoiceNumber: 'INV-2024-004' },
-  { id: 5, patientId: 5, patientName: 'Charlie Davis', amount: 100.00, paymentStatus: 'Paid', date: '2024-03-11', insuranceDetails: 'Kaiser, 90% coverage', services: ['Initial Consultation'], invoiceNumber: 'INV-2024-005' },
-  { id: 6, patientId: 6, patientName: 'Emily Wilson', amount: 250.00, paymentStatus: 'Overdue', date: '2024-03-10', insuranceDetails: 'Humana, 60% coverage', services: ['Neurological Examination', 'MRI Scan'], invoiceNumber: 'INV-2024-006' },
-  { id: 7, patientId: 7, patientName: 'David Lee', amount: 165.00, paymentStatus: 'Paid', date: '2024-03-09', insuranceDetails: 'Blue Shield, 75% coverage', services: ['Cardiac Evaluation', 'ECG'], invoiceNumber: 'INV-2024-007' },
-  { id: 8, patientId: 8, patientName: 'Grace Clark', amount: 195.00, paymentStatus: 'Pending', date: '2024-03-08', insuranceDetails: 'Medicare, 80% coverage', services: ['Joint Assessment', 'X-Ray'], invoiceNumber: 'INV-2024-008' },
-  { id: 9, patientId: 9, patientName: 'Oliver Martinez', amount: 90.00, paymentStatus: 'Cancelled', date: '2024-03-07', insuranceDetails: 'Anthem, 70% coverage', services: ['Consultation (Cancelled)'], invoiceNumber: 'INV-2024-009' },
-  { id: 10, patientId: 10, patientName: 'Sophia Harris', amount: 210.00, paymentStatus: 'Paid', date: '2024-03-06', insuranceDetails: 'Medicaid, 100% coverage', services: ['Blood Work', 'Consultation'], invoiceNumber: 'INV-2024-010' }
+  { id: 1, patientId: 1, patientName: 'Wafula Otieno', amount: 150.00, paymentStatus: 'Paid', date: '2024-03-15', insuranceDetails: 'Jubilee Insurance, 80% coverage', services: ['Consultation', 'Blood Test'], invoiceNumber: 'INV-2024-001' },
+  { id: 2, patientId: 2, patientName: 'Akinyi Wanjiku', amount: 200.00, paymentStatus: 'Paid', date: '2024-03-14', insuranceDetails: 'NHIF, 70% coverage', services: ['Annual Physical', 'Vaccination'], invoiceNumber: 'INV-2024-002' },
+  { id: 3, patientId: 3, patientName: 'Namukwaya Adeke', amount: 120.00, paymentStatus: 'Pending', date: '2024-03-13', insuranceDetails: 'AAR, 75% coverage', services: ['Diabetes Consultation'], invoiceNumber: 'INV-2024-003' },
+  { id: 4, patientId: 4, patientName: 'Ochen Mutua', amount: 180.00, paymentStatus: 'Pending', date: '2024-03-12', insuranceDetails: 'Britam, 65% coverage', services: ['Pulmonary Function Test', 'Consultation'], invoiceNumber: 'INV-2024-004' },
+  { id: 5, patientId: 5, patientName: 'Kato Kamau', amount: 100.00, paymentStatus: 'Paid', date: '2024-03-11', insuranceDetails: 'Resolution Insurance, 90% coverage', services: ['Initial Consultation'], invoiceNumber: 'INV-2024-005' },
+  { id: 6, patientId: 6, patientName: 'Wambui Atieno', amount: 250.00, paymentStatus: 'Overdue', date: '2024-03-10', insuranceDetails: 'CIC Insurance, 60% coverage', services: ['Neurological Examination', 'MRI Scan'], invoiceNumber: 'INV-2024-006' },
+  { id: 7, patientId: 7, patientName: 'Okello Mwangi', amount: 165.00, paymentStatus: 'Paid', date: '2024-03-09', insuranceDetails: 'Heritage Insurance, 75% coverage', services: ['Cardiac Evaluation', 'ECG'], invoiceNumber: 'INV-2024-007' },
+  { id: 8, patientId: 8, patientName: 'Nafula Omondi', amount: 195.00, paymentStatus: 'Pending', date: '2024-03-08', insuranceDetails: 'NHIF, 80% coverage', services: ['Joint Assessment', 'X-Ray'], invoiceNumber: 'INV-2024-008' },
+  { id: 9, patientId: 9, patientName: 'Mugisha Githinji', amount: 90.00, paymentStatus: 'Cancelled', date: '2024-03-07', insuranceDetails: 'Jubilee Insurance, 70% coverage', services: ['Consultation (Cancelled)'], invoiceNumber: 'INV-2024-009' },
+  { id: 10, patientId: 10, patientName: 'Amina Waweru', amount: 210.00, paymentStatus: 'Paid', date: '2024-03-06', insuranceDetails: 'NHIF, 100% coverage', services: ['Blood Work', 'Consultation'], invoiceNumber: 'INV-2024-010' }
 ];
 
 // Dashboard Statistics
