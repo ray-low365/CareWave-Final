@@ -1,234 +1,675 @@
-
 import { Patient, Appointment, Staff, InventoryItem, BillingRecord, DashboardStats, NewPatient, NewInventoryItem } from '../types';
-import { patients, appointments, staff, inventory, billing, dashboardStats } from './mockData';
+import { supabase } from '@/integrations/supabase/client';
 
-// Helper function to simulate API delay
+// Helper function to simulate API delay for backward compatibility during transition
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 // API Service for Patients
 export const PatientService = {
   getAll: async (): Promise<Patient[]> => {
-    await delay(500); // Simulate network delay
-    return [...patients];
+    const { data, error } = await supabase
+      .from('patients')
+      .select('*');
+    
+    if (error) throw error;
+    
+    return data.map(p => ({
+      id: p.id,
+      name: p.name,
+      contactInfo: p.contact_info,
+      medicalHistory: p.medical_history || '',
+      appointmentHistory: p.appointment_history || '',
+      address: p.address || '',
+      // Map other fields as needed
+    }));
   },
   
   getById: async (id: number): Promise<Patient> => {
-    await delay(300);
-    const patient = patients.find(p => p.id === id);
-    if (!patient) throw new Error('Patient not found');
-    return { ...patient };
+    const { data, error } = await supabase
+      .from('patients')
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) throw error;
+    
+    return {
+      id: data.id,
+      name: data.name,
+      contactInfo: data.contact_info,
+      medicalHistory: data.medical_history || '',
+      appointmentHistory: data.appointment_history || '',
+      address: data.address || '',
+      // Map other fields as needed
+    };
   },
   
   create: async (patient: NewPatient): Promise<Patient> => {
-    await delay(700);
-    const newPatient = {
-      ...patient,
-      id: Math.max(...patients.map(p => p.id), 0) + 1
+    const { data, error } = await supabase
+      .from('patients')
+      .insert({
+        name: patient.name,
+        contact_info: patient.contactInfo,
+        medical_history: patient.medicalHistory,
+        appointment_history: patient.appointmentHistory,
+        address: patient.address
+        // Map other fields as needed
+      })
+      .select()
+      .single();
+    
+    if (error) throw error;
+    
+    return {
+      id: data.id,
+      name: data.name,
+      contactInfo: data.contact_info,
+      medicalHistory: data.medical_history || '',
+      appointmentHistory: data.appointment_history || '',
+      address: data.address || '',
+      // Map other fields as needed
     };
-    patients.push(newPatient as Patient);
-    return { ...newPatient as Patient };
   },
   
   update: async (id: number, patient: Partial<Patient>): Promise<Patient> => {
-    await delay(500);
-    const index = patients.findIndex(p => p.id === id);
-    if (index === -1) throw new Error('Patient not found');
+    const { data, error } = await supabase
+      .from('patients')
+      .update({
+        name: patient.name,
+        contact_info: patient.contactInfo,
+        medical_history: patient.medicalHistory,
+        appointment_history: patient.appointmentHistory,
+        address: patient.address
+        // Map other fields as needed
+      })
+      .eq('id', id)
+      .select()
+      .single();
     
-    const updatedPatient = { ...patients[index], ...patient };
-    patients[index] = updatedPatient;
-    return { ...updatedPatient };
+    if (error) throw error;
+    
+    return {
+      id: data.id,
+      name: data.name,
+      contactInfo: data.contact_info,
+      medicalHistory: data.medical_history || '',
+      appointmentHistory: data.appointment_history || '',
+      address: data.address || '',
+      // Map other fields as needed
+    };
   },
   
   delete: async (id: number): Promise<void> => {
-    await delay(600);
-    const index = patients.findIndex(p => p.id === id);
-    if (index === -1) throw new Error('Patient not found');
-    patients.splice(index, 1);
+    const { error } = await supabase
+      .from('patients')
+      .delete()
+      .eq('id', id);
+    
+    if (error) throw error;
   }
 };
 
 // API Service for Appointments
 export const AppointmentService = {
   getAll: async (): Promise<Appointment[]> => {
-    await delay(500);
-    return [...appointments];
+    const { data, error } = await supabase
+      .from('appointments')
+      .select(`
+        *,
+        patients(name)
+      `);
+    
+    if (error) throw error;
+    
+    return data.map(a => ({
+      id: a.id,
+      patientId: a.patient_id,
+      patientName: a.patients?.name || 'Unknown Patient',
+      date: a.date,
+      time: a.time,
+      status: a.status,
+      doctor: a.doctor || '',
+      department: a.department || '',
+      notes: a.notes || ''
+    }));
   },
   
   getById: async (id: number): Promise<Appointment> => {
-    await delay(300);
-    const appointment = appointments.find(a => a.id === id);
-    if (!appointment) throw new Error('Appointment not found');
-    return { ...appointment };
+    const { data, error } = await supabase
+      .from('appointments')
+      .select(`
+        *,
+        patients(name)
+      `)
+      .eq('id', id)
+      .single();
+    
+    if (error) throw error;
+    
+    return {
+      id: data.id,
+      patientId: data.patient_id,
+      patientName: data.patients?.name || 'Unknown Patient',
+      date: data.date,
+      time: data.time,
+      status: data.status,
+      doctor: data.doctor || '',
+      department: data.department || '',
+      notes: data.notes || ''
+    };
   },
   
   getByPatientId: async (patientId: number): Promise<Appointment[]> => {
-    await delay(400);
-    return appointments.filter(a => a.patientId === patientId).map(a => ({ ...a }));
+    const { data, error } = await supabase
+      .from('appointments')
+      .select(`
+        *,
+        patients(name)
+      `)
+      .eq('patient_id', patientId);
+    
+    if (error) throw error;
+    
+    return data.map(a => ({
+      id: a.id,
+      patientId: a.patient_id,
+      patientName: a.patients?.name || 'Unknown Patient',
+      date: a.date,
+      time: a.time,
+      status: a.status,
+      doctor: a.doctor || '',
+      department: a.department || '',
+      notes: a.notes || ''
+    }));
   },
   
   create: async (appointment: Omit<Appointment, 'id'>): Promise<Appointment> => {
-    await delay(700);
-    const newAppointment = {
-      ...appointment,
-      id: Math.max(...appointments.map(a => a.id), 0) + 1
+    const { data, error } = await supabase
+      .from('appointments')
+      .insert({
+        patient_id: appointment.patientId,
+        date: appointment.date,
+        time: appointment.time,
+        status: appointment.status,
+        doctor: appointment.doctor,
+        department: appointment.department,
+        notes: appointment.notes
+      })
+      .select(`
+        *,
+        patients(name)
+      `)
+      .single();
+    
+    if (error) throw error;
+    
+    return {
+      id: data.id,
+      patientId: data.patient_id,
+      patientName: data.patients?.name || 'Unknown Patient',
+      date: data.date,
+      time: data.time,
+      status: data.status,
+      doctor: data.doctor || '',
+      department: data.department || '',
+      notes: data.notes || ''
     };
-    appointments.push(newAppointment as Appointment);
-    return { ...newAppointment as Appointment };
   },
   
   update: async (id: number, appointment: Partial<Appointment>): Promise<Appointment> => {
-    await delay(500);
-    const index = appointments.findIndex(a => a.id === id);
-    if (index === -1) throw new Error('Appointment not found');
+    const { data, error } = await supabase
+      .from('appointments')
+      .update({
+        patient_id: appointment.patientId,
+        date: appointment.date,
+        time: appointment.time,
+        status: appointment.status,
+        doctor: appointment.doctor,
+        department: appointment.department,
+        notes: appointment.notes
+      })
+      .eq('id', id)
+      .select(`
+        *,
+        patients(name)
+      `)
+      .single();
     
-    const updatedAppointment = { ...appointments[index], ...appointment };
-    appointments[index] = updatedAppointment;
-    return { ...updatedAppointment };
+    if (error) throw error;
+    
+    return {
+      id: data.id,
+      patientId: data.patient_id,
+      patientName: data.patients?.name || 'Unknown Patient',
+      date: data.date,
+      time: data.time,
+      status: data.status,
+      doctor: data.doctor || '',
+      department: data.department || '',
+      notes: data.notes || ''
+    };
   },
   
   delete: async (id: number): Promise<void> => {
-    await delay(600);
-    const index = appointments.findIndex(a => a.id === id);
-    if (index === -1) throw new Error('Appointment not found');
-    appointments.splice(index, 1);
+    const { error } = await supabase
+      .from('appointments')
+      .delete()
+      .eq('id', id);
+    
+    if (error) throw error;
   }
 };
 
 // API Service for Staff
 export const StaffService = {
   getAll: async (): Promise<Staff[]> => {
-    await delay(500);
-    return [...staff];
+    const { data, error } = await supabase
+      .from('staff')
+      .select('*');
+    
+    if (error) throw error;
+    
+    return data.map(s => ({
+      id: s.id,
+      name: s.name || '',
+      role: s.role,
+      department: s.department,
+      email: s.email || '',
+      phone: s.phone || '',
+      specialty: s.specialty || '',
+      joiningDate: s.joining_date || ''
+    }));
   },
   
   getById: async (id: number): Promise<Staff> => {
-    await delay(300);
-    const member = staff.find(s => s.id === id);
-    if (!member) throw new Error('Staff member not found');
-    return { ...member };
+    const { data, error } = await supabase
+      .from('staff')
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) throw error;
+    
+    return {
+      id: data.id,
+      name: data.name || '',
+      role: data.role,
+      department: data.department,
+      email: data.email || '',
+      phone: data.phone || '',
+      specialty: data.specialty || '',
+      joiningDate: data.joining_date || ''
+    };
   },
   
   create: async (member: Omit<Staff, 'id'>): Promise<Staff> => {
-    await delay(700);
-    const newMember = {
-      ...member,
-      id: Math.max(...staff.map(s => s.id), 0) + 1
+    const { data, error } = await supabase
+      .from('staff')
+      .insert({
+        name: member.name,
+        role: member.role,
+        department: member.department,
+        email: member.email,
+        phone: member.phone,
+        specialty: member.specialty,
+        joining_date: member.joiningDate
+      })
+      .select()
+      .single();
+    
+    if (error) throw error;
+    
+    return {
+      id: data.id,
+      name: data.name || '',
+      role: data.role,
+      department: data.department,
+      email: data.email || '',
+      phone: data.phone || '',
+      specialty: data.specialty || '',
+      joiningDate: data.joining_date || ''
     };
-    staff.push(newMember as Staff);
-    return { ...newMember as Staff };
   },
   
   update: async (id: number, member: Partial<Staff>): Promise<Staff> => {
-    await delay(500);
-    const index = staff.findIndex(s => s.id === id);
-    if (index === -1) throw new Error('Staff member not found');
+    const { data, error } = await supabase
+      .from('staff')
+      .update({
+        name: member.name,
+        role: member.role,
+        department: member.department,
+        email: member.email,
+        phone: member.phone,
+        specialty: member.specialty,
+        joining_date: member.joiningDate
+      })
+      .eq('id', id)
+      .select()
+      .single();
     
-    const updatedMember = { ...staff[index], ...member };
-    staff[index] = updatedMember;
-    return { ...updatedMember };
+    if (error) throw error;
+    
+    return {
+      id: data.id,
+      name: data.name || '',
+      role: data.role,
+      department: data.department,
+      email: data.email || '',
+      phone: data.phone || '',
+      specialty: data.specialty || '',
+      joiningDate: data.joining_date || ''
+    };
   },
   
   delete: async (id: number): Promise<void> => {
-    await delay(600);
-    const index = staff.findIndex(s => s.id === id);
-    if (index === -1) throw new Error('Staff member not found');
-    staff.splice(index, 1);
+    const { error } = await supabase
+      .from('staff')
+      .delete()
+      .eq('id', id);
+    
+    if (error) throw error;
   }
 };
 
 // API Service for Inventory
 export const InventoryService = {
   getAll: async (): Promise<InventoryItem[]> => {
-    await delay(500);
-    return [...inventory];
+    const { data, error } = await supabase
+      .from('inventory')
+      .select('*');
+    
+    if (error) throw error;
+    
+    return data.map(i => ({
+      id: i.id,
+      name: i.name,
+      description: i.description,
+      quantity: i.quantity,
+      price: i.price,
+      category: i.category
+    }));
   },
   
   getById: async (id: number): Promise<InventoryItem> => {
-    await delay(300);
-    const item = inventory.find(i => i.id === id);
-    if (!item) throw new Error('Inventory item not found');
-    return { ...item };
+    const { data, error } = await supabase
+      .from('inventory')
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) throw error;
+    
+    return {
+      id: data.id,
+      name: data.name,
+      description: data.description,
+      quantity: data.quantity,
+      price: data.price,
+      category: data.category
+    };
   },
   
   create: async (item: NewInventoryItem): Promise<InventoryItem> => {
-    await delay(700);
-    const newItem = {
-      ...item,
-      id: Math.max(...inventory.map(i => i.id), 0) + 1
+    const { data, error } = await supabase
+      .from('inventory')
+      .insert({
+        name: item.name,
+        description: item.description,
+        quantity: item.quantity,
+        price: item.price,
+        category: item.category
+      })
+      .select()
+      .single();
+    
+    if (error) throw error;
+    
+    return {
+      id: data.id,
+      name: data.name,
+      description: data.description,
+      quantity: data.quantity,
+      price: data.price,
+      category: data.category
     };
-    inventory.push(newItem as InventoryItem);
-    return { ...newItem as InventoryItem };
   },
   
   update: async (id: number, item: Partial<InventoryItem>): Promise<InventoryItem> => {
-    await delay(500);
-    const index = inventory.findIndex(i => i.id === id);
-    if (index === -1) throw new Error('Inventory item not found');
+    const { data, error } = await supabase
+      .from('inventory')
+      .update({
+        name: item.name,
+        description: item.description,
+        quantity: item.quantity,
+        price: item.price,
+        category: item.category
+      })
+      .eq('id', id)
+      .select()
+      .single();
     
-    const updatedItem = { ...inventory[index], ...item };
-    inventory[index] = updatedItem;
-    return { ...updatedItem };
+    if (error) throw error;
+    
+    return {
+      id: data.id,
+      name: data.name,
+      description: data.description,
+      quantity: data.quantity,
+      price: data.price,
+      category: data.category
+    };
   },
   
   delete: async (id: number): Promise<void> => {
-    await delay(600);
-    const index = inventory.findIndex(i => i.id === id);
-    if (index === -1) throw new Error('Inventory item not found');
-    inventory.splice(index, 1);
+    const { error } = await supabase
+      .from('inventory')
+      .delete()
+      .eq('id', id);
+    
+    if (error) throw error;
   }
 };
 
 // API Service for Billing
 export const BillingService = {
   getAll: async (): Promise<BillingRecord[]> => {
-    await delay(500);
-    return [...billing];
+    const { data, error } = await supabase
+      .from('billing')
+      .select('*');
+    
+    if (error) throw error;
+    
+    return data.map(b => ({
+      id: b.id,
+      patientId: b.patient_id,
+      amount: b.amount,
+      date: b.date,
+      status: b.status,
+      notes: b.notes
+    }));
   },
   
   getById: async (id: number): Promise<BillingRecord> => {
-    await delay(300);
-    const record = billing.find(b => b.id === id);
-    if (!record) throw new Error('Billing record not found');
-    return { ...record };
+    const { data, error } = await supabase
+      .from('billing')
+      .select('*')
+      .eq('id', id)
+      .single();
+    
+    if (error) throw error;
+    
+    return {
+      id: data.id,
+      patientId: data.patient_id,
+      amount: data.amount,
+      date: data.date,
+      status: data.status,
+      notes: data.notes
+    };
   },
   
   getByPatientId: async (patientId: number): Promise<BillingRecord[]> => {
-    await delay(400);
-    return billing.filter(b => b.patientId === patientId).map(b => ({ ...b }));
+    const { data, error } = await supabase
+      .from('billing')
+      .select('*')
+      .eq('patient_id', patientId);
+    
+    if (error) throw error;
+    
+    return data.map(b => ({
+      id: b.id,
+      patientId: b.patient_id,
+      amount: b.amount,
+      date: b.date,
+      status: b.status,
+      notes: b.notes
+    }));
   },
   
   create: async (record: Omit<BillingRecord, 'id'>): Promise<BillingRecord> => {
-    await delay(700);
-    const newRecord = {
-      ...record,
-      id: Math.max(...billing.map(b => b.id), 0) + 1
+    const { data, error } = await supabase
+      .from('billing')
+      .insert({
+        patient_id: record.patientId,
+        amount: record.amount,
+        date: record.date,
+        status: record.status,
+        notes: record.notes
+      })
+      .select()
+      .single();
+    
+    if (error) throw error;
+    
+    return {
+      id: data.id,
+      patientId: data.patient_id,
+      amount: data.amount,
+      date: data.date,
+      status: data.status,
+      notes: data.notes
     };
-    billing.push(newRecord as BillingRecord);
-    return { ...newRecord as BillingRecord };
   },
   
   update: async (id: number, record: Partial<BillingRecord>): Promise<BillingRecord> => {
-    await delay(500);
-    const index = billing.findIndex(b => b.id === id);
-    if (index === -1) throw new Error('Billing record not found');
+    const { data, error } = await supabase
+      .from('billing')
+      .update({
+        patient_id: record.patientId,
+        amount: record.amount,
+        date: record.date,
+        status: record.status,
+        notes: record.notes
+      })
+      .eq('id', id)
+      .select()
+      .single();
     
-    const updatedRecord = { ...billing[index], ...record };
-    billing[index] = updatedRecord;
-    return { ...updatedRecord };
+    if (error) throw error;
+    
+    return {
+      id: data.id,
+      patientId: data.patient_id,
+      amount: data.amount,
+      date: data.date,
+      status: data.status,
+      notes: data.notes
+    };
   },
   
   delete: async (id: number): Promise<void> => {
-    await delay(600);
-    const index = billing.findIndex(b => b.id === id);
-    if (index === -1) throw new Error('Billing record not found');
-    billing.splice(index, 1);
+    const { error } = await supabase
+      .from('billing')
+      .delete()
+      .eq('id', id);
+    
+    if (error) throw error;
   }
 };
 
 // API Service for Dashboard Statistics
 export const DashboardService = {
   getStats: async (): Promise<DashboardStats> => {
-    await delay(800);
-    return { ...dashboardStats };
+    const { count: totalPatients, error: patientsError } = await supabase
+      .from('patients')
+      .select('*', { count: 'exact', head: true });
+    
+    if (patientsError) throw patientsError;
+    
+    const { count: totalAppointments, error: appointmentsError } = await supabase
+      .from('appointments')
+      .select('*', { count: 'exact', head: true });
+    
+    if (appointmentsError) throw appointmentsError;
+    
+    const today = new Date().toISOString().split('T')[0];
+    const { count: todayAppointments, error: todayError } = await supabase
+      .from('appointments')
+      .select('*', { count: 'exact', head: true })
+      .eq('date', today)
+      .eq('status', 'Scheduled');
+    
+    if (todayError) throw todayError;
+    
+    const thirtyDaysLater = new Date();
+    thirtyDaysLater.setDate(thirtyDaysLater.getDate() + 30);
+    const thirtyDaysLaterStr = thirtyDaysLater.toISOString().split('T')[0];
+    
+    const { count: upcomingAppointments, error: upcomingError } = await supabase
+      .from('appointments')
+      .select('*', { count: 'exact', head: true })
+      .gte('date', today)
+      .lte('date', thirtyDaysLaterStr)
+      .eq('status', 'Scheduled');
+    
+    if (upcomingError) throw upcomingError;
+
+    return {
+      totalPatients: totalPatients || 0,
+      totalAppointments: totalAppointments || 0,
+      todayAppointments: todayAppointments || 0,
+      upcomingAppointments: upcomingAppointments || 0,
+      monthlyPatientVisits: [
+        { month: 'Jan', visits: 45 },
+        { month: 'Feb', visits: 52 },
+        { month: 'Mar', visits: 49 },
+        { month: 'Apr', visits: 62 },
+        { month: 'May', visits: 55 },
+        { month: 'Jun', visits: 60 },
+        { month: 'Jul', visits: 58 },
+        { month: 'Aug', visits: 65 },
+        { month: 'Sep', visits: 70 },
+        { month: 'Oct', visits: 75 },
+        { month: 'Nov', visits: 68 },
+        { month: 'Dec', visits: 72 }
+      ],
+      departmentDistribution: [
+        { department: 'Cardiology', patients: 120 },
+        { department: 'Orthopedics', patients: 80 },
+        { month: 'Neurology', patients: 60 },
+        { month: 'Pediatrics', patients: 110 },
+        { month: 'Dermatology', patients: 50 }
+      ],
+      appointmentStatus: [
+        { status: 'Scheduled', count: 45 },
+        { status: 'Completed', count: 120 },
+        { status: 'Cancelled', count: 15 },
+        { status: 'No-Show', count: 8 }
+      ],
+      revenueData: [
+        { month: 'Jan', amount: 12500 },
+        { month: 'Feb', amount: 13800 },
+        { month: 'Mar', amount: 13200 },
+        { month: 'Apr', amount: 15500 },
+        { month: 'May', amount: 14800 },
+        { month: 'Jun', amount: 16200 },
+        { month: 'Jul', amount: 15800 },
+        { month: 'Aug', amount: 17500 },
+        { month: 'Sep', amount: 18200 },
+        { month: 'Oct', amount: 19500 },
+        { month: 'Nov', amount: 18800 },
+        { month: 'Dec', amount: 20500 }
+      ]
+    };
   }
 };

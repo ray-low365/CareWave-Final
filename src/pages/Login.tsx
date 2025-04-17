@@ -29,8 +29,8 @@ const Login = () => {
       await login(email, password);
       toast.success("Login successful!");
       navigate("/");
-    } catch (error) {
-      toast.error("Invalid credentials. Please try again.");
+    } catch (error: any) {
+      toast.error(error.message || "Invalid credentials. Please try again.");
       console.error("Login failed:", error);
     } finally {
       setIsLoading(false);
@@ -82,9 +82,7 @@ const Login = () => {
                 />
               </div>
               <div className="text-xs text-muted-foreground">
-                <p>Demo accounts:</p>
-                <p>Admin: admin@carewave.com / password</p>
-                <p>Doctor: doctor@carewave.com / password</p>
+                <p>Need an account? <a href="#" className="text-primary hover:underline">Sign up</a></p>
               </div>
             </CardContent>
             <CardFooter>
