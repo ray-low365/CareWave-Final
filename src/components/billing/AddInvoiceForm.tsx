@@ -19,7 +19,7 @@ interface AddInvoiceFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess?: () => void;
-  patientId?: number;
+  patientId?: string;
 }
 
 const AddInvoiceForm: React.FC<AddInvoiceFormProps> = ({ 
@@ -40,7 +40,7 @@ const AddInvoiceForm: React.FC<AddInvoiceFormProps> = ({
 
   const form = useForm<Omit<BillingRecord, "id" | "services">>({
     defaultValues: {
-      patientId: patientId || 0,
+      patientId: patientId || "",
       patientName: "",
       amount: 0,
       paymentStatus: "Pending",
@@ -50,7 +50,7 @@ const AddInvoiceForm: React.FC<AddInvoiceFormProps> = ({
     },
   });
 
-  const handlePatientChange = (patientId: number) => {
+  const handlePatientChange = (patientId: string) => {
     const patient = patients?.find(p => p.id === patientId);
     if (patient) {
       form.setValue("patientId", patient.id);
@@ -108,8 +108,8 @@ const AddInvoiceForm: React.FC<AddInvoiceFormProps> = ({
                 <FormItem>
                   <FormLabel>Patient*</FormLabel>
                   <Select
-                    onValueChange={(value) => handlePatientChange(Number(value))}
-                    defaultValue={field.value ? String(field.value) : undefined}
+                    onValueChange={(value) => handlePatientChange(value)}
+                    defaultValue={field.value ? field.value : undefined}
                     disabled={!!patientId}
                   >
                     <FormControl>
@@ -119,7 +119,7 @@ const AddInvoiceForm: React.FC<AddInvoiceFormProps> = ({
                     </FormControl>
                     <SelectContent>
                       {patients?.map(patient => (
-                        <SelectItem key={patient.id} value={String(patient.id)}>
+                        <SelectItem key={patient.id} value={patient.id}>
                           {patient.name}
                         </SelectItem>
                       ))}

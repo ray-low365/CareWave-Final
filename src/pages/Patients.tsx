@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -51,7 +50,7 @@ const Patients = () => {
   });
 
   const deletePatientMutation = useMutation({
-    mutationFn: (id: number) => PatientService.delete(id),
+    mutationFn: (id: string) => PatientService.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["patients"] });
       toast.success("Patient deleted successfully");
@@ -84,7 +83,7 @@ const Patients = () => {
     }
   };
 
-  const handleViewPatient = (id: number) => {
+  const handleViewPatient = (id: string) => {
     navigate(`/patients/${id}`);
   };
 

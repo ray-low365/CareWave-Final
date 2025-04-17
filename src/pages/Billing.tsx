@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { BillingService } from "@/services/api";
@@ -31,7 +30,7 @@ const Billing = () => {
   });
 
   const updateStatusMutation = useMutation({
-    mutationFn: ({ id, status }: { id: number, status: 'Paid' | 'Pending' | 'Overdue' | 'Cancelled' }) => 
+    mutationFn: ({ id, status }: { id: string, status: 'Paid' | 'Pending' | 'Overdue' | 'Cancelled' }) => 
       BillingService.update(id, { paymentStatus: status }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["billing"] });
@@ -55,7 +54,7 @@ const Billing = () => {
     refetch();
   };
 
-  const handleStatusChange = (id: number, status: 'Paid' | 'Pending' | 'Overdue' | 'Cancelled') => {
+  const handleStatusChange = (id: string, status: 'Paid' | 'Pending' | 'Overdue' | 'Cancelled') => {
     updateStatusMutation.mutate({ id, status });
   };
 

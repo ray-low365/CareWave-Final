@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -31,7 +30,7 @@ const Appointments = () => {
   });
 
   const updateStatusMutation = useMutation({
-    mutationFn: ({ id, status }: { id: number, status: 'Completed' | 'Cancelled' | 'No-Show' | 'Scheduled' }) => 
+    mutationFn: ({ id, status }: { id: string, status: 'Completed' | 'Cancelled' | 'No-Show' | 'Scheduled' }) => 
       AppointmentService.update(id, { status }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["appointments"] });
@@ -50,7 +49,7 @@ const Appointments = () => {
     setEditAppointment(appointment);
   };
 
-  const handleStatusChange = (id: number, status: 'Completed' | 'Cancelled' | 'No-Show' | 'Scheduled') => {
+  const handleStatusChange = (id: string, status: 'Completed' | 'Cancelled' | 'No-Show' | 'Scheduled') => {
     updateStatusMutation.mutate({ id, status });
   };
 
@@ -82,7 +81,6 @@ const Appointments = () => {
     );
   }
 
-  // Filter appointments
   const todayAppointments = appointments?.filter(app => 
     isToday(parseISO(app.date)) && app.status === 'Scheduled'
   ) || [];

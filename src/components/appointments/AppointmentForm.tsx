@@ -39,7 +39,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
 
   const form = useForm<Omit<Appointment, "id">>({
     defaultValues: {
-      patientId: appointment?.patientId || 0,
+      patientId: appointment?.patientId || "",
       patientName: appointment?.patientName || '',
       date: appointment?.date || new Date().toISOString().split('T')[0],
       time: appointment?.time || '09:00',
@@ -50,7 +50,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
     },
   });
 
-  const handlePatientChange = (patientId: number) => {
+  const handlePatientChange = (patientId: string) => {
     const patient = patients?.find(p => p.id === patientId);
     if (patient) {
       form.setValue("patientId", patient.id);
@@ -96,8 +96,8 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                 <FormItem>
                   <FormLabel>Patient*</FormLabel>
                   <Select
-                    onValueChange={(value) => handlePatientChange(Number(value))}
-                    defaultValue={field.value ? String(field.value) : undefined}
+                    onValueChange={(value) => handlePatientChange(value)}
+                    defaultValue={field.value ? field.value : undefined}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -106,7 +106,7 @@ const AppointmentForm: React.FC<AppointmentFormProps> = ({
                     </FormControl>
                     <SelectContent>
                       {patients?.map(patient => (
-                        <SelectItem key={patient.id} value={String(patient.id)}>
+                        <SelectItem key={patient.id} value={patient.id}>
                           {patient.name}
                         </SelectItem>
                       ))}

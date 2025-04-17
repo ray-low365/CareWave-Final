@@ -3,75 +3,69 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from 'sonner';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Loader2 } from "lucide-react";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!email || !password) {
-      toast.error("Please enter both email and password");
-      return;
-    }
-    
+    setError("");
     setIsLoading(true);
-    
+
     try {
       await login(email, password);
-      toast.success("Login successful!");
       navigate("/");
-    } catch (error) {
-      toast.error("Invalid credentials. Please try again.");
-      console.error("Login failed:", error);
-    } finally {
+    } catch (err) {
+      setError("Invalid email or password");
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-muted/40 p-4">
-      <div className="w-full max-w-md">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-primary">CareWave</h1>
-          <p className="text-muted-foreground mt-2">Clinic Management System</p>
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
+      <div className="w-full max-w-md space-y-4">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold tracking-tight text-primary">CareWave</h1>
+          <p className="text-sm text-muted-foreground">Hospital Management System</p>
         </div>
-        
+
         <Card>
           <CardHeader>
-            <CardTitle>Log In</CardTitle>
-            <CardDescription>
-              Enter your credentials to access your account
-            </CardDescription>
+            <CardTitle>Login</CardTitle>
+            <CardDescription>Enter your credentials to access your account</CardDescription>
           </CardHeader>
-          <form onSubmit={handleSubmit}>
-            <CardContent className="space-y-4">
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {error && (
+                <Alert variant="destructive">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="admin@carewave.com"
+                  placeholder="yourname@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
+
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
-                  <a href="#" className="text-sm text-primary hover:underline">
-                    Forgot password?
-                  </a>
-                </div>
+                <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
                   type="password"
@@ -81,18 +75,40 @@ const Login = () => {
                   required
                 />
               </div>
-              <div className="text-xs text-muted-foreground">
-                <p>Demo accounts:</p>
-                <p>Admin: admin@carewave.com / password</p>
-                <p>Doctor: doctor@carewave.com / password</p>
-              </div>
-            </CardContent>
-            <CardFooter>
+
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Logging in..." : "Log In"}
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Logging in...
+                  </>
+                ) : (
+                  "Login"
+                )}
               </Button>
-            </CardFooter>
-          </form>
+            </form>
+          </CardContent>
+          <CardFooter>
+            <div className="w-full space-y-4">
+              <div className="rounded-md border p-4">
+                <h3 className="text-sm font-semibold">Demo Login Credentials</h3>
+                <div className="mt-2 space-y-2 text-sm">
+                  <div className="grid grid-cols-2 gap-1">
+                    <div className="font-medium">Admin:</div>
+                    <div>admin@carewave.com</div>
+                    <div className="font-medium">Password:</div>
+                    <div>password</div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1">
+                    <div className="font-medium">Doctor:</div>
+                    <div>doctor@carewave.com</div>
+                    <div className="font-medium">Password:</div>
+                    <div>password</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardFooter>
         </Card>
       </div>
     </div>
