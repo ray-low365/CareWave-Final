@@ -7,8 +7,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from 'sonner';
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { InfoIcon } from "lucide-react";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -31,8 +29,8 @@ const Login = () => {
       await login(email, password);
       toast.success("Login successful!");
       navigate("/");
-    } catch (error: any) {
-      toast.error(error.message || "Invalid credentials. Please try again.");
+    } catch (error) {
+      toast.error("Invalid credentials. Please try again.");
       console.error("Login failed:", error);
     } finally {
       setIsLoading(false);
@@ -83,18 +81,10 @@ const Login = () => {
                   required
                 />
               </div>
-              
-              <Alert className="bg-muted/60 border-muted">
-                <InfoIcon className="h-4 w-4 text-primary" />
-                <AlertDescription className="text-xs text-muted-foreground">
-                  <p className="font-semibold mb-1">Demo Credentials:</p>
-                  <p><strong>Admin:</strong> admin@carewave.com / password123</p>
-                  <p><strong>Doctor:</strong> doctor@carewave.com / password123</p>
-                </AlertDescription>
-              </Alert>
-              
               <div className="text-xs text-muted-foreground">
-                <p>Need an account? <a href="#" className="text-primary hover:underline">Sign up</a></p>
+                <p>Demo accounts:</p>
+                <p>Admin: admin@carewave.com / password</p>
+                <p>Doctor: doctor@carewave.com / password</p>
               </div>
             </CardContent>
             <CardFooter>

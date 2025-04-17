@@ -1,10 +1,10 @@
 
 export interface Patient {
-  id: string;
+  id: number;
   name: string;
   contactInfo: string;
-  medicalHistory: string | null;
-  appointmentHistory: string | null;
+  medicalHistory: string;
+  appointmentHistory: string;
   dateOfBirth?: string;
   gender?: string;
   address?: string;
@@ -15,8 +15,8 @@ export interface Patient {
 export interface NewPatient {
   name: string;
   contactInfo: string;
-  medicalHistory?: string | null;
-  appointmentHistory?: string | null;
+  medicalHistory: string;
+  appointmentHistory: string;
   dateOfBirth?: string;
   gender?: string;
   address?: string;
@@ -25,8 +25,8 @@ export interface NewPatient {
 }
 
 export interface Appointment {
-  id: string;
-  patientId: string;
+  id: number;
+  patientId: number;
   patientName: string;
   date: string;
   time: string;
@@ -37,7 +37,7 @@ export interface Appointment {
 }
 
 export interface Staff {
-  id: string;
+  id: number;
   name: string;
   role: string;
   department: string;
@@ -48,7 +48,7 @@ export interface Staff {
 }
 
 export interface InventoryItem {
-  id: string;
+  id: number;
   name: string;
   quantity: number;
   reorderLevel: number;
@@ -71,8 +71,8 @@ export interface NewInventoryItem {
 }
 
 export interface BillingRecord {
-  id: string;
-  patientId: string;
+  id: number;
+  patientId: number;
   patientName: string;
   amount: number;
   paymentStatus: 'Paid' | 'Pending' | 'Overdue' | 'Cancelled';
