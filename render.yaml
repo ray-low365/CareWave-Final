@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: carewave-backend
+    env: node
+    buildCommand: cd backend && npm install && npm run build
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: API_URL
+        value: https://carewave-backend.onrender.com
+      - key: CORS_ORIGIN
+        value: https://carewave-frontend.onrender.com
+      - key: JWT_SECRET
+        fromGroup: carewave-secrets
+      - key: SUPABASE_URL
+        fromGroup: carewave-secrets
+      - key: SUPABASE_ANON_KEY
+        fromGroup: carewave-secrets
