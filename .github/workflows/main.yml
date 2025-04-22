@@ -1,0 +1,58 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    # Backend build and test
+    - name: Backend - Install dependencies
+      run: |
+        cd backend
+        npm ci
+      
+    - name: Backend - Build
+      run: |
+        cd backend
+        npm run build
+    
+    # Uncomment if you have tests
+    # - name: Backend - Test
+    #   run: |
+    #     cd backend
+    #     npm test
+    
+    # Frontend build
+    - name: Frontend - Install dependencies
+      run: |
+        cd frontend
+        npm ci
+      
+    - name: Frontend - Build
+      run: |
+        cd frontend
+        npm run build
+    
+    # Uncomment if you have tests
+    # - name: Frontend - Test
+    #   run: |
+    #     cd frontend
+    #     npm test
