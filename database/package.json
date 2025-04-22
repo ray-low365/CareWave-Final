@@ -1,0 +1,19 @@
+{
+  "name": "carewave-database",
+  "version": "1.0.0",
+  "description": "Database layer for CareWave Clinical Management System",
+  "main": "index.js",
+  "scripts": {
+    "migrate": "node -r ts-node/register migrations/run-migrations.ts",
+    "seed": "node -r ts-node/register seeds/seed.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.3",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
