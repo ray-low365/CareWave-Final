@@ -1,0 +1,13 @@
+{
+  "name": "carewave-clinical-ryan",
+  "version": "1.0.0",
+  "description": "CareWave Clinical Management System",
+  "scripts": {
+    "start": "cd backend && npm start",
+    "build": "cd backend && npm install && npm run build",
+    "test": "cd backend && npm test"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
