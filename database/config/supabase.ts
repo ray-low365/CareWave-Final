@@ -2,8 +2,8 @@ import { createClient } from '@supabase/supabase-js';
 import { Database } from '../models/supabase-types';
 
 // Initialize Supabase client
-const supabaseUrl = process.env.SUPABASE_URL || '';
-const supabaseKey = process.env.SUPABASE_ANON_KEY || '';
+const supabaseUrl = process.env.SUPABASE_URL || 'https://efyoufljsmihzhqjdsqz.supabase.co';
+const supabaseKey = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmeW91Zmxqc21paHpocWpkc3F6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU1MzUwODUsImV4cCI6MjA2MTExMTA4NX0.yRTHra6psjP88a21rYCuw-Dfe08ZIr_znLVnbQ0zDJU';
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseKey);
 
@@ -155,6 +155,34 @@ export const db = {
     },
     delete: async (id: string) => {
       const { error } = await supabase.from('billing').delete().eq('id', id);
+      if (error) throw error;
+    }
+  },
+
+  // Todos
+  todos: {
+    getAll: async () => {
+      const { data, error } = await supabase.from('todos').select('*').order('created_at', { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+    getById: async (id: string) => {
+      const { data, error } = await supabase.from('todos').select('*').eq('id', id).single();
+      if (error) throw error;
+      return data;
+    },
+    create: async (todo: Database['public']['Tables']['todos']['Insert']) => {
+      const { data, error } = await supabase.from('todos').insert(todo).select().single();
+      if (error) throw error;
+      return data;
+    },
+    update: async (id: string, todo: Database['public']['Tables']['todos']['Update']) => {
+      const { data, error } = await supabase.from('todos').update(todo).eq('id', id).select().single();
+      if (error) throw error;
+      return data;
+    },
+    delete: async (id: string) => {
+      const { error } = await supabase.from('todos').delete().eq('id', id);
       if (error) throw error;
     }
   }

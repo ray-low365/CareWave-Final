@@ -116,3 +116,15 @@ export const billingServicesSeed = [
   { billing_id: "10", service_name: 'Blood Work' },
   { billing_id: "10", service_name: 'Consultation' }
 ];
+
+// Seed data for todos
+export const todosSeed = [
+  { id: "1", title: 'Order more surgical gloves', completed: false },
+  { id: "2", title: 'Schedule staff meeting for next week', completed: true },
+  { id: "3", title: 'Follow up with patient #3 about test results', completed: false },
+  { id: "4", title: 'Update inventory tracking system', completed: false },
+  { id: "5", title: 'Review billing reports for the month', completed: true },
+  { id: "6", title: 'Organize patient files', completed: false },
+  { id: "7", title: 'Call insurance company about claim #JB123456', completed: false },
+  { id: "8", title: 'Prepare for tomorrow\'s appointments', completed: false }
+];

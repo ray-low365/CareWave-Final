@@ -15,6 +15,7 @@ import Inventory from "./pages/Inventory";
 import Billing from "./pages/Billing";
 import Analytics from "./pages/Analytics";
 import NotFound from "./pages/NotFound";
+import TodosPage from "./pages/TodosPage";
 
 // Protected route wrapper
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -37,7 +38,7 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login />} />
-      
+
       <Route
         path="/"
         element={
@@ -94,6 +95,14 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/todos"
+        element={
+          <ProtectedRoute>
+            <TodosPage />
+          </ProtectedRoute>
+        }
+      />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
@@ -103,7 +112,7 @@ const AppRoutes = () => {
 const App = () => {
   // Move QueryClient instantiation inside the component
   const queryClient = new QueryClient();
-  
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>

@@ -16,6 +16,7 @@ import staffRoutes from './routes/staff';
 import inventoryRoutes from './routes/inventory';
 import billingRoutes from './routes/billing';
 import authRoutes from './routes/auth';
+import todoRoutes from './routes/todos';
 
 // Create Express app
 const app = express();
@@ -61,6 +62,7 @@ app.use('/api/staff', staffRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/billing', billingRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/todos', todoRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

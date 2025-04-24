@@ -21,6 +21,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     { to: '/billing', label: 'Billing' },
     { to: '/inventory', label: 'Inventory' },
     { to: '/analytics', label: 'Analytics' },
+    { to: '/todos', label: 'Todos' },
   ];
 
   const toggleSidebar = () => {
@@ -36,7 +37,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       {/* Sidebar */}
-      <aside 
+      <aside
         className={cn(
           "bg-sidebar shadow-medium border-r border-sidebar-border transition-all duration-300 ease-in-out",
           "fixed z-30 flex h-full w-64 flex-col",
@@ -53,10 +54,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         "bg-background shadow-sm",
         sidebarOpen && !isMobile && "ml-64",
       )}>
-        <HeaderContent 
-          isMobile={isMobile} 
-          sidebarOpen={sidebarOpen} 
-          toggleSidebar={toggleSidebar} 
+        <HeaderContent
+          isMobile={isMobile}
+          sidebarOpen={sidebarOpen}
+          toggleSidebar={toggleSidebar}
           navItems={navItems}
         />
 
@@ -67,8 +68,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
       {/* Mobile overlay */}
       {isMobile && sidebarOpen && (
-        <div 
-          className="fixed inset-0 z-20 bg-background/70 backdrop-blur-sm" 
+        <div
+          className="fixed inset-0 z-20 bg-background/70 backdrop-blur-sm"
           onClick={closeSidebar}
         />
       )}

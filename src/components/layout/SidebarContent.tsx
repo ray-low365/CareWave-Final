@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/contexts/AuthContext';
-import { Home, Users, Calendar, FileText, Package, BarChart3, LogOut } from 'lucide-react';
+import { Home, Users, Calendar, FileText, Package, BarChart3, LogOut, CheckSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface NavItemProps {
@@ -47,6 +47,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({ closeSidebar }) => {
     { to: '/billing', icon: <FileText size={18} />, label: 'Billing' },
     { to: '/inventory', icon: <Package size={18} />, label: 'Inventory' },
     { to: '/analytics', icon: <BarChart3 size={18} />, label: 'Analytics' },
+    { to: '/todos', icon: <CheckSquare size={18} />, label: 'Todos' },
   ];
 
   const handleLogout = () => {

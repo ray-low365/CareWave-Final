@@ -1,5 +1,5 @@
 import { supabase } from '../config/supabase';
-import { patientsSeed, appointmentsSeed, staffSeed, inventorySeed, billingSeed, billingServicesSeed } from './seed-data';
+import { patientsSeed, appointmentsSeed, staffSeed, inventorySeed, billingSeed, billingServicesSeed, todosSeed } from './seed-data';
 
 /**
  * Seed the database with initial data
@@ -36,6 +36,10 @@ async function seedDatabase() {
     console.log('Seeding billing services...');
     await supabase.from('billing_services').insert(billingServicesSeed);
 
+    // Seed todos
+    console.log('Seeding todos...');
+    await supabase.from('todos').insert(todosSeed);
+
     console.log('Database seeding completed successfully!');
   } catch (error) {
     console.error('Error seeding database:', error);
@@ -55,6 +59,7 @@ async function clearExistingData() {
     await supabase.from('inventory').delete().neq('id', '0');
     await supabase.from('staff').delete().neq('id', '0');
     await supabase.from('patients').delete().neq('id', '0');
+    await supabase.from('todos').delete().neq('id', '0');
   } catch (error) {
     console.error('Error clearing existing data:', error);
     throw error;

@@ -26,6 +26,10 @@ export type BillingService = Database['public']['Tables']['billing_services']['R
 export type BillingServiceInsert = Database['public']['Tables']['billing_services']['Insert'];
 export type BillingServiceUpdate = Database['public']['Tables']['billing_services']['Update'];
 
+export type Todo = Database['public']['Tables']['todos']['Row'];
+export type TodoInsert = Database['public']['Tables']['todos']['Insert'];
+export type TodoUpdate = Database['public']['Tables']['todos']['Update'];
+
 // Extended types with additional properties for frontend
 export interface PatientWithAppointments extends Patient {
   appointments?: Appointment[];
