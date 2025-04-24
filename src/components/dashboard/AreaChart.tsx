@@ -24,6 +24,10 @@ const AreaChart: React.FC<AreaChartProps> = ({
   description,
   color = "#0ea5e9"
 }) => {
+  // Simplify data to only show essential points (every 3rd point)
+  // This reduces visual complexity while maintaining the trend
+  const simplifiedData = data.filter((_, index) => index % 3 === 0 || index === data.length - 1);
+
   return (
     <Card className={cn("h-full overflow-hidden", className)}>
       <CardHeader className="pb-2">
@@ -34,10 +38,10 @@ const AreaChart: React.FC<AreaChartProps> = ({
         <div style={{ height: `${height}px` }}>
           <ResponsiveContainer width="100%" height="100%">
             <Chart
-              data={data}
+              data={simplifiedData}
               margin={{
                 top: 10,
-                right: 30,
+                right: 20,
                 left: 0,
                 bottom: 0,
               }}
@@ -45,26 +49,20 @@ const AreaChart: React.FC<AreaChartProps> = ({
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
               <XAxis dataKey={xKey} tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
               <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
-              <Tooltip 
-                contentStyle={{ 
-                  borderRadius: '8px', 
-                  border: 'none', 
+              <Tooltip
+                contentStyle={{
+                  borderRadius: '8px',
+                  border: 'none',
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                   fontSize: '12px'
-                }} 
+                }}
               />
-              <defs>
-                <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={color} stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor={color} stopOpacity={0.1}/>
-                </linearGradient>
-              </defs>
-              <Area 
-                type="monotone" 
-                dataKey={yKey} 
-                stroke={color} 
-                fillOpacity={1} 
-                fill="url(#colorGradient)" 
+              <Area
+                type="monotone"
+                dataKey={yKey}
+                stroke={color}
+                fill={color}
+                fillOpacity={0.2}
                 strokeWidth={2}
               />
             </Chart>

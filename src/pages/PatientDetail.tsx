@@ -10,10 +10,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { ArrowLeft, Calendar, CalendarPlus, Edit, FileText, Loader2, Trash2, User, Plus } from "lucide-react";
+import { ArrowLeft, Calendar, CalendarPlus, Edit, FileText, Loader2, Trash2, User, Plus, Download, FileDown } from "lucide-react";
 import EditPatientForm from "@/components/patients/EditPatientForm";
 import AppointmentForm from "@/components/appointments/AppointmentForm";
 import AddInvoiceForm from "@/components/billing/AddInvoiceForm";
+import { generateInvoicePDF, exportToCSV } from "@/utils/exportUtils";
+import { formatDate } from "@/utils/invoiceUtils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,6 +26,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const PatientDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -115,11 +123,12 @@ const PatientDetail = () => {
     );
   }
 
-  const formatDate = (dateStr: string, timeStr?: string) => {
-    const date = timeStr 
-      ? new Date(`${dateStr}T${timeStr}`) 
+  // Format date with optional time
+  const formatDateTime = (dateStr: string, timeStr?: string) => {
+    const date = timeStr
+      ? new Date(`${dateStr}T${timeStr}`)
       : new Date(dateStr);
-    
+
     return date.toLocaleString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -130,6 +139,35 @@ const PatientDetail = () => {
         hour12: true
       })
     });
+  };
+
+  // Handle downloading an invoice
+  const handleDownloadInvoice = (record: BillingRecord) => {
+    try {
+      generateInvoicePDF(record);
+      toast.success("Invoice download initiated");
+    } catch (error) {
+      console.error("Error downloading invoice:", error);
+      toast.error("Failed to download invoice");
+    }
+  };
+
+  // Handle exporting billing records to CSV
+  const handleExportCSV = () => {
+    if (billingRecords && billingRecords.length > 0) {
+      try {
+        exportToCSV(
+          billingRecords,
+          `carewave-invoices-${patient.name.replace(/\s+/g, '-')}-${new Date().toISOString().split('T')[0]}.csv`
+        );
+        toast.success("CSV export initiated");
+      } catch (error) {
+        console.error("Error exporting to CSV:", error);
+        toast.error("Failed to export to CSV");
+      }
+    } else {
+      toast.error("No billing records to export");
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -270,7 +308,7 @@ const PatientDetail = () => {
                     {appointments.slice(0, 3).map((appointment) => (
                       <div key={appointment.id} className="flex items-center justify-between rounded-md border p-3">
                         <div>
-                          <p className="font-medium">{formatDate(appointment.date, appointment.time)}</p>
+                          <p className="font-medium">{formatDateTime(appointment.date, appointment.time)}</p>
                           <p className="text-sm text-muted-foreground">
                             {appointment.doctor} - {appointment.department}
                           </p>
@@ -327,7 +365,7 @@ const PatientDetail = () => {
                     {appointments.map((appointment) => (
                       <div key={appointment.id} className="grid grid-cols-[1fr_1fr_1fr_auto] gap-4 p-3 text-sm">
                         <div className="font-medium">
-                          {formatDate(appointment.date, appointment.time)}
+                          {formatDateTime(appointment.date, appointment.time)}
                         </div>
                         <div>
                           {appointment.doctor} - {appointment.department}
@@ -360,10 +398,27 @@ const PatientDetail = () => {
                     <FileText className="h-5 w-5 text-primary" />
                     <CardTitle>Billing Records</CardTitle>
                   </div>
-                  <Button size="sm" onClick={() => setAddInvoiceOpen(true)}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    New Invoice
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    {billingRecords && billingRecords.length > 0 && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline" size="sm">
+                            <FileDown className="mr-2 h-4 w-4" />
+                            Export
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={handleExportCSV}>
+                            Export to CSV
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
+                    <Button size="sm" onClick={() => setAddInvoiceOpen(true)}>
+                      <Plus className="mr-2 h-4 w-4" />
+                      New Invoice
+                    </Button>
+                  </div>
                 </div>
                 <CardDescription>
                   View billing history for this patient
@@ -372,24 +427,35 @@ const PatientDetail = () => {
               <CardContent>
                 {billingRecords && billingRecords.length > 0 ? (
                   <div className="rounded-md border">
-                    <div className="grid grid-cols-[1fr_1fr_1fr_auto] gap-4 bg-muted/50 p-3 text-sm font-medium text-muted-foreground">
+                    <div className="grid grid-cols-[1fr_1fr_1fr_auto_auto] gap-4 bg-muted/50 p-3 text-sm font-medium text-muted-foreground">
                       <div>Invoice</div>
                       <div>Date</div>
                       <div>Amount</div>
-                      <div className="text-right">Status</div>
+                      <div>Status</div>
+                      <div className="text-right">Actions</div>
                     </div>
                     <Separator />
                     {billingRecords.map((record) => (
-                      <div key={record.id} className="grid grid-cols-[1fr_1fr_1fr_auto] gap-4 p-3 text-sm">
+                      <div key={record.id} className="grid grid-cols-[1fr_1fr_1fr_auto_auto] gap-4 p-3 text-sm">
                         <div className="font-medium">
                           {record.invoiceNumber || `INV-${record.id}`}
                         </div>
                         <div>{formatDate(record.date)}</div>
                         <div>${record.amount.toFixed(2)}</div>
-                        <div className="text-right">
+                        <div>
                           <Badge className={getPaymentStatusColor(record.paymentStatus)}>
                             {record.paymentStatus}
                           </Badge>
+                        </div>
+                        <div className="text-right">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => handleDownloadInvoice(record)}
+                            title="Download Invoice"
+                          >
+                            <Download className="h-4 w-4" />
+                          </Button>
                         </div>
                       </div>
                     ))}
@@ -443,7 +509,7 @@ const PatientDetail = () => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={confirmDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >

@@ -65,37 +65,37 @@ export const staff: Staff[] = [
   { id: "10", name: 'Amanda Miller', role: 'Nurse', department: 'ICU', email: 'amanda.miller@carewave.com', phone: '555-012-3456', joiningDate: '2023-04-01' }
 ];
 
-// Mock Inventory Data
+// Mock Inventory Data - Updated with 2025 dates
 export const inventory: InventoryItem[] = [
-  { id: "1", name: 'Surgical Gloves', quantity: 500, reorderLevel: 100, category: 'Supplies', supplier: 'MedSupply Co.', lastRestocked: '2024-03-15', price: 0.50, expiryDate: '2026-03-15' },
-  { id: "2", name: 'Surgical Masks', quantity: 1000, reorderLevel: 200, category: 'Supplies', supplier: 'MedSupply Co.', lastRestocked: '2024-03-10', price: 0.30, expiryDate: '2026-03-10' },
-  { id: "3", name: 'Paracetamol', quantity: 300, reorderLevel: 50, category: 'Medication', supplier: 'PharmaCorp', lastRestocked: '2024-03-05', price: 5.00, expiryDate: '2025-03-05' },
-  { id: "4", name: 'Ibuprofen', quantity: 250, reorderLevel: 50, category: 'Medication', supplier: 'PharmaCorp', lastRestocked: '2024-03-01', price: 6.00, expiryDate: '2025-03-01' },
-  { id: "5", name: 'Syringes', quantity: 400, reorderLevel: 80, category: 'Supplies', supplier: 'MedEquip Inc.', lastRestocked: '2024-02-28', price: 0.75, expiryDate: '2026-02-28' },
-  { id: "6", name: 'Bandages', quantity: 600, reorderLevel: 100, category: 'Supplies', supplier: 'MedEquip Inc.', lastRestocked: '2024-02-25', price: 1.20, expiryDate: '2026-02-25' },
-  { id: "7", name: 'Antibiotics', quantity: 150, reorderLevel: 30, category: 'Medication', supplier: 'PharmaCorp', lastRestocked: '2024-02-20', price: 12.00, expiryDate: '2025-02-20' },
-  { id: "8", name: 'Disinfectant', quantity: 200, reorderLevel: 40, category: 'Supplies', supplier: 'CleanMed Ltd.', lastRestocked: '2024-02-15', price: 8.50, expiryDate: '2026-02-15' },
-  { id: "9", name: 'Thermometers', quantity: 50, reorderLevel: 10, category: 'Equipment', supplier: 'MedTech Solutions', lastRestocked: '2024-02-10', price: 15.00 },
-  { id: "10", name: 'Blood Pressure Monitors', quantity: 25, reorderLevel: 5, category: 'Equipment', supplier: 'MedTech Solutions', lastRestocked: '2024-02-05', price: 65.00 },
-  { id: "11", name: 'Gauze Pads', quantity: 350, reorderLevel: 70, category: 'Supplies', supplier: 'MedEquip Inc.', lastRestocked: '2024-02-01', price: 2.00, expiryDate: '2026-02-01' },
-  { id: "12", name: 'Insulin', quantity: 80, reorderLevel: 20, category: 'Medication', supplier: 'PharmaCorp', lastRestocked: '2024-01-28', price: 45.00, expiryDate: '2025-01-28' },
-  { id: "13", name: 'Wheelchairs', quantity: 10, reorderLevel: 2, category: 'Equipment', supplier: 'MobilityAid Co.', lastRestocked: '2024-01-20', price: 250.00 },
-  { id: "14", name: 'First Aid Kits', quantity: 30, reorderLevel: 5, category: 'Supplies', supplier: 'MedSupply Co.', lastRestocked: '2024-01-15', price: 25.00, expiryDate: '2026-01-15' },
-  { id: "15", name: 'Sterile Wipes', quantity: 450, reorderLevel: 90, category: 'Supplies', supplier: 'CleanMed Ltd.', lastRestocked: '2024-01-10', price: 0.40, expiryDate: '2026-01-10' }
+  { id: "1", name: 'Surgical Gloves', quantity: 500, reorderLevel: 100, category: 'Supplies', supplier: 'MedSupply Co.', lastRestocked: '2025-03-15', price: 0.50, expiryDate: '2027-03-15' },
+  { id: "2", name: 'Surgical Masks', quantity: 1000, reorderLevel: 200, category: 'Supplies', supplier: 'MedSupply Co.', lastRestocked: '2025-03-10', price: 0.30, expiryDate: '2027-03-10' },
+  { id: "3", name: 'Paracetamol', quantity: 300, reorderLevel: 50, category: 'Medication', supplier: 'PharmaCorp', lastRestocked: '2025-03-05', price: 5.00, expiryDate: '2026-03-05' },
+  { id: "4", name: 'Ibuprofen', quantity: 250, reorderLevel: 50, category: 'Medication', supplier: 'PharmaCorp', lastRestocked: '2025-03-01', price: 6.00, expiryDate: '2026-03-01' },
+  { id: "5", name: 'Syringes', quantity: 400, reorderLevel: 80, category: 'Supplies', supplier: 'MedEquip Inc.', lastRestocked: '2025-02-28', price: 0.75, expiryDate: '2027-02-28' },
+  { id: "6", name: 'Bandages', quantity: 600, reorderLevel: 100, category: 'Supplies', supplier: 'MedEquip Inc.', lastRestocked: '2025-02-25', price: 1.20, expiryDate: '2027-02-25' },
+  { id: "7", name: 'Antibiotics', quantity: 150, reorderLevel: 30, category: 'Medication', supplier: 'PharmaCorp', lastRestocked: '2025-02-20', price: 12.00, expiryDate: '2026-02-20' },
+  { id: "8", name: 'Disinfectant', quantity: 200, reorderLevel: 40, category: 'Supplies', supplier: 'CleanMed Ltd.', lastRestocked: '2025-02-15', price: 8.50, expiryDate: '2027-02-15' },
+  { id: "9", name: 'Thermometers', quantity: 50, reorderLevel: 10, category: 'Equipment', supplier: 'MedTech Solutions', lastRestocked: '2025-02-10', price: 15.00 },
+  { id: "10", name: 'Blood Pressure Monitors', quantity: 25, reorderLevel: 5, category: 'Equipment', supplier: 'MedTech Solutions', lastRestocked: '2025-02-05', price: 65.00 },
+  { id: "11", name: 'Gauze Pads', quantity: 350, reorderLevel: 70, category: 'Supplies', supplier: 'MedEquip Inc.', lastRestocked: '2025-02-01', price: 2.00, expiryDate: '2027-02-01' },
+  { id: "12", name: 'Insulin', quantity: 80, reorderLevel: 20, category: 'Medication', supplier: 'PharmaCorp', lastRestocked: '2025-01-28', price: 45.00, expiryDate: '2026-01-28' },
+  { id: "13", name: 'Wheelchairs', quantity: 10, reorderLevel: 2, category: 'Equipment', supplier: 'MobilityAid Co.', lastRestocked: '2025-01-20', price: 250.00 },
+  { id: "14", name: 'First Aid Kits', quantity: 30, reorderLevel: 5, category: 'Supplies', supplier: 'MedSupply Co.', lastRestocked: '2025-01-15', price: 25.00, expiryDate: '2027-01-15' },
+  { id: "15", name: 'Sterile Wipes', quantity: 450, reorderLevel: 90, category: 'Supplies', supplier: 'CleanMed Ltd.', lastRestocked: '2025-01-10', price: 0.40, expiryDate: '2027-01-10' }
 ];
 
-// Mock Billing Data - Updating to use the new patient names
+// Mock Billing Data - Updated with 2025 dates and randomized invoice numbers
 export const billing: BillingRecord[] = [
-  { id: "1", patientId: "1", patientName: 'Wafula Otieno', amount: 150.00, paymentStatus: 'Paid', date: '2024-03-15', insuranceDetails: 'Jubilee Insurance, 80% coverage', services: ['Consultation', 'Blood Test'], invoiceNumber: 'INV-2024-001' },
-  { id: "2", patientId: "2", patientName: 'Akinyi Wanjiku', amount: 200.00, paymentStatus: 'Paid', date: '2024-03-14', insuranceDetails: 'NHIF, 70% coverage', services: ['Annual Physical', 'Vaccination'], invoiceNumber: 'INV-2024-002' },
-  { id: "3", patientId: "3", patientName: 'Namukwaya Adeke', amount: 120.00, paymentStatus: 'Pending', date: '2024-03-13', insuranceDetails: 'AAR, 75% coverage', services: ['Diabetes Consultation'], invoiceNumber: 'INV-2024-003' },
-  { id: "4", patientId: "4", patientName: 'Ochen Mutua', amount: 180.00, paymentStatus: 'Pending', date: '2024-03-12', insuranceDetails: 'Britam, 65% coverage', services: ['Pulmonary Function Test', 'Consultation'], invoiceNumber: 'INV-2024-004' },
-  { id: "5", patientId: "5", patientName: 'Kato Kamau', amount: 100.00, paymentStatus: 'Paid', date: '2024-03-11', insuranceDetails: 'Resolution Insurance, 90% coverage', services: ['Initial Consultation'], invoiceNumber: 'INV-2024-005' },
-  { id: "6", patientId: "6", patientName: 'Wambui Atieno', amount: 250.00, paymentStatus: 'Overdue', date: '2024-03-10', insuranceDetails: 'CIC Insurance, 60% coverage', services: ['Neurological Examination', 'MRI Scan'], invoiceNumber: 'INV-2024-006' },
-  { id: "7", patientId: "7", patientName: 'Okello Mwangi', amount: 165.00, paymentStatus: 'Paid', date: '2024-03-09', insuranceDetails: 'Heritage Insurance, 75% coverage', services: ['Cardiac Evaluation', 'ECG'], invoiceNumber: 'INV-2024-007' },
-  { id: "8", patientId: "8", patientName: 'Nafula Omondi', amount: 195.00, paymentStatus: 'Pending', date: '2024-03-08', insuranceDetails: 'NHIF, 80% coverage', services: ['Joint Assessment', 'X-Ray'], invoiceNumber: 'INV-2024-008' },
-  { id: "9", patientId: "9", patientName: 'Mugisha Githinji', amount: 90.00, paymentStatus: 'Cancelled', date: '2024-03-07', insuranceDetails: 'Jubilee Insurance, 70% coverage', services: ['Consultation (Cancelled)'], invoiceNumber: 'INV-2024-009' },
-  { id: "10", patientId: "10", patientName: 'Amina Waweru', amount: 210.00, paymentStatus: 'Paid', date: '2024-03-06', insuranceDetails: 'NHIF, 100% coverage', services: ['Blood Work', 'Consultation'], invoiceNumber: 'INV-2024-010' }
+  { id: "1", patientId: "1", patientName: 'Wafula Otieno', amount: 150.00, paymentStatus: 'Paid', date: '2025-03-15', insuranceDetails: 'Jubilee Insurance, 80% coverage', services: ['Consultation', 'Blood Test'], invoiceNumber: 'INV-2025-A7F3' },
+  { id: "2", patientId: "2", patientName: 'Akinyi Wanjiku', amount: 200.00, paymentStatus: 'Paid', date: '2025-03-14', insuranceDetails: 'NHIF, 70% coverage', services: ['Annual Physical', 'Vaccination'], invoiceNumber: 'INV-2025-B2E9' },
+  { id: "3", patientId: "3", patientName: 'Namukwaya Adeke', amount: 120.00, paymentStatus: 'Pending', date: '2025-03-13', insuranceDetails: 'AAR, 75% coverage', services: ['Diabetes Consultation'], invoiceNumber: 'INV-2025-C4D8' },
+  { id: "4", patientId: "4", patientName: 'Ochen Mutua', amount: 180.00, paymentStatus: 'Pending', date: '2025-03-12', insuranceDetails: 'Britam, 65% coverage', services: ['Pulmonary Function Test', 'Consultation'], invoiceNumber: 'INV-2025-D1F5' },
+  { id: "5", patientId: "5", patientName: 'Kato Kamau', amount: 100.00, paymentStatus: 'Paid', date: '2025-03-11', insuranceDetails: 'Resolution Insurance, 90% coverage', services: ['Initial Consultation'], invoiceNumber: 'INV-2025-E8G2' },
+  { id: "6", patientId: "6", patientName: 'Wambui Atieno', amount: 250.00, paymentStatus: 'Overdue', date: '2025-03-10', insuranceDetails: 'CIC Insurance, 60% coverage', services: ['Neurological Examination', 'MRI Scan'], invoiceNumber: 'INV-2025-F3H7' },
+  { id: "7", patientId: "7", patientName: 'Okello Mwangi', amount: 165.00, paymentStatus: 'Paid', date: '2025-03-09', insuranceDetails: 'Heritage Insurance, 75% coverage', services: ['Cardiac Evaluation', 'ECG'], invoiceNumber: 'INV-2025-G9J4' },
+  { id: "8", patientId: "8", patientName: 'Nafula Omondi', amount: 195.00, paymentStatus: 'Pending', date: '2025-03-08', insuranceDetails: 'NHIF, 80% coverage', services: ['Joint Assessment', 'X-Ray'], invoiceNumber: 'INV-2025-H6K1' },
+  { id: "9", patientId: "9", patientName: 'Mugisha Githinji', amount: 90.00, paymentStatus: 'Cancelled', date: '2025-03-07', insuranceDetails: 'Jubilee Insurance, 70% coverage', services: ['Consultation (Cancelled)'], invoiceNumber: 'INV-2025-I5L8' },
+  { id: "10", patientId: "10", patientName: 'Amina Waweru', amount: 210.00, paymentStatus: 'Paid', date: '2025-03-06', insuranceDetails: 'NHIF, 100% coverage', services: ['Blood Work', 'Consultation'], invoiceNumber: 'INV-2025-J2M6' }
 ];
 
 // Dashboard Statistics

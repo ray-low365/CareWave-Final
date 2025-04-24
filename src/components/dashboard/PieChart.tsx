@@ -22,18 +22,38 @@ const PieChart: React.FC<PieChartProps> = ({
   description,
   colors = COLORS
 }) => {
+  // Simplify data by showing only top 4 items and grouping the rest as "Other"
+  const simplifiedData = data.length > 4
+    ? [...data]
+        .sort((a, b) => b.value - a.value)
+        .reduce((acc, item, index) => {
+          if (index < 4) {
+            acc.push(item);
+          } else {
+            const otherItem = acc.find(i => i.name === "Other");
+            if (otherItem) {
+              otherItem.value += item.value;
+            } else {
+              acc.push({ name: "Other", value: item.value });
+            }
+          }
+          return acc;
+        }, [] as Array<{ name: string; value: number }>)
+    : data;
+
   return (
     <Card className={cn("h-full overflow-hidden", className)}>
       <CardHeader className="pb-2">
         <CardTitle className="text-base font-medium">{title}</CardTitle>
         {description && <p className="text-xs text-muted-foreground">{description}</p>}
+        {data.length > 4 && <p className="text-xs text-muted-foreground mt-1">Showing top 4 categories</p>}
       </CardHeader>
       <CardContent>
         <div style={{ height: `${height}px` }}>
           <ResponsiveContainer width="100%" height="100%">
             <Chart>
               <Pie
-                data={data}
+                data={simplifiedData}
                 cx="50%"
                 cy="50%"
                 labelLine={false}
@@ -42,24 +62,25 @@ const PieChart: React.FC<PieChartProps> = ({
                 paddingAngle={5}
                 dataKey="value"
               >
-                {data.map((entry, index) => (
+                {simplifiedData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
                 ))}
               </Pie>
-              <Tooltip 
+              <Tooltip
                 formatter={(value) => [`${value}`, '']}
-                contentStyle={{ 
-                  borderRadius: '8px', 
-                  border: 'none', 
+                contentStyle={{
+                  borderRadius: '8px',
+                  border: 'none',
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                   fontSize: '12px'
                 }}
               />
-              <Legend 
-                layout="horizontal" 
-                verticalAlign="bottom" 
+              <Legend
+                layout="horizontal"
+                verticalAlign="bottom"
                 align="center"
-                wrapperStyle={{ fontSize: '12px', paddingTop: '20px' }} 
+                wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }}
+                formatter={(value) => <span style={{ fontSize: '11px' }}>{value}</span>}
               />
             </Chart>
           </ResponsiveContainer>

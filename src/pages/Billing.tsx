@@ -7,16 +7,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, FileText, Plus, Search, Download, MoreHorizontal } from "lucide-react";
+import { Loader2, FileText, Plus, Search, Download, MoreHorizontal, FileDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BillingRecord } from "@/types";
 import { toast } from "sonner";
 import AddInvoiceForm from "@/components/billing/AddInvoiceForm";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
+import { generateInvoicePDF, exportToCSV } from "@/utils/exportUtils";
+import { formatDate } from "@/utils/invoiceUtils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger
 } from "@/components/ui/dropdown-menu";
 
 const Billing = () => {
@@ -30,7 +36,7 @@ const Billing = () => {
   });
 
   const updateStatusMutation = useMutation({
-    mutationFn: ({ id, status }: { id: string, status: 'Paid' | 'Pending' | 'Overdue' | 'Cancelled' }) => 
+    mutationFn: ({ id, status }: { id: string, status: 'Paid' | 'Pending' | 'Overdue' | 'Cancelled' }) =>
       BillingService.update(id, { paymentStatus: status }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["billing"] });
@@ -73,13 +79,37 @@ const Billing = () => {
     }
   };
 
-  const formatDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
+  // Handle downloading an invoice
+  const handleDownloadInvoice = (record: BillingRecord) => {
+    try {
+      generateInvoicePDF(record);
+      toast.success("Invoice download initiated");
+    } catch (error) {
+      console.error("Error downloading invoice:", error);
+      toast.error("Failed to download invoice");
+    }
+  };
+
+  // Handle exporting records to CSV
+  const handleExportCSV = (records: BillingRecord[]) => {
+    try {
+      const tabName = getActiveTab();
+      exportToCSV(records, `carewave-invoices-${tabName}-${new Date().toISOString().split('T')[0]}.csv`);
+      toast.success("CSV export initiated");
+    } catch (error) {
+      console.error("Error exporting to CSV:", error);
+      toast.error("Failed to export to CSV");
+    }
+  };
+
+  // Get the currently active tab
+  const getActiveTab = () => {
+    const tabElements = document.querySelectorAll('[role="tab"][data-state="active"]');
+    if (tabElements.length > 0) {
+      const activeTab = tabElements[0].getAttribute('data-value');
+      return activeTab || 'all';
+    }
+    return 'all';
   };
 
   if (isLoading) {
@@ -126,10 +156,11 @@ const Billing = () => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleDownloadInvoice(record)}>
               <Download className="mr-2 h-4 w-4" />
-              Download
+              Download Invoice
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
             {record.paymentStatus !== 'Paid' && (
               <DropdownMenuItem onClick={() => handleStatusChange(record.id, 'Paid')}>
                 Mark as Paid
@@ -207,17 +238,34 @@ const Billing = () => {
               <TabsContent key={tab} value={tab}>
                 <Card>
                   <CardHeader>
-                    <div className="flex items-center gap-2">
-                      <FileText className="h-5 w-5 text-primary" />
-                      <CardTitle>
-                        {tab === 'all'
-                          ? 'All Invoices'
-                          : tab === 'pending'
-                          ? 'Pending Invoices'
-                          : tab === 'overdue'
-                          ? 'Overdue Invoices'
-                          : 'Paid Invoices'}
-                      </CardTitle>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-5 w-5 text-primary" />
+                        <CardTitle>
+                          {tab === 'all'
+                            ? 'All Invoices'
+                            : tab === 'pending'
+                            ? 'Pending Invoices'
+                            : tab === 'overdue'
+                            ? 'Overdue Invoices'
+                            : 'Paid Invoices'}
+                        </CardTitle>
+                      </div>
+                      {displayRecords && displayRecords.length > 0 && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size="sm">
+                              <FileDown className="mr-2 h-4 w-4" />
+                              Export
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => handleExportCSV(displayRecords)}>
+                              Export to CSV
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
                     </div>
                   </CardHeader>
                   <CardContent>

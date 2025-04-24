@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { BillingService, PatientService } from "@/services/api";
 import { BillingRecord } from "@/types";
 import { useQuery } from "@tanstack/react-query";
+import { generateInvoiceNumber, getCurrentDateFor2025 } from "@/utils/invoiceUtils";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,16 +23,16 @@ interface AddInvoiceFormProps {
   patientId?: string;
 }
 
-const AddInvoiceForm: React.FC<AddInvoiceFormProps> = ({ 
-  open, 
-  onOpenChange, 
+const AddInvoiceForm: React.FC<AddInvoiceFormProps> = ({
+  open,
+  onOpenChange,
   onSuccess,
   patientId
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [services, setServices] = useState<string[]>([]);
   const [currentService, setCurrentService] = useState("");
-  
+
   const { data: patients } = useQuery({
     queryKey: ["patients"],
     queryFn: PatientService.getAll,
@@ -44,9 +45,9 @@ const AddInvoiceForm: React.FC<AddInvoiceFormProps> = ({
       patientName: "",
       amount: 0,
       paymentStatus: "Pending",
-      date: new Date().toISOString().split('T')[0],
+      date: getCurrentDateFor2025(), // Use 2025 date
       insuranceDetails: "",
-      invoiceNumber: `INV-${new Date().getTime().toString().slice(-6)}`,
+      invoiceNumber: generateInvoiceNumber(), // Use randomized invoice number
     },
   });
 
@@ -129,7 +130,7 @@ const AddInvoiceForm: React.FC<AddInvoiceFormProps> = ({
                 </FormItem>
               )}
             />
-            
+
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <FormField
                 control={form.control}
@@ -144,7 +145,7 @@ const AddInvoiceForm: React.FC<AddInvoiceFormProps> = ({
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="date"
@@ -159,12 +160,12 @@ const AddInvoiceForm: React.FC<AddInvoiceFormProps> = ({
                 )}
               />
             </div>
-            
+
             <div>
               <FormLabel>Services</FormLabel>
               <div className="flex space-x-2 mb-2">
-                <Input 
-                  placeholder="Add service (e.g. Consultation)" 
+                <Input
+                  placeholder="Add service (e.g. Consultation)"
                   value={currentService}
                   onChange={(e) => setCurrentService(e.target.value)}
                   onKeyDown={(e) => {
@@ -183,8 +184,8 @@ const AddInvoiceForm: React.FC<AddInvoiceFormProps> = ({
                   {services.map((service, index) => (
                     <Badge key={index} variant="secondary" className="flex items-center gap-1">
                       {service}
-                      <button 
-                        type="button" 
+                      <button
+                        type="button"
                         onClick={() => removeService(index)}
                         className="ml-1 rounded-full hover:bg-muted p-0.5"
                       >
@@ -197,7 +198,7 @@ const AddInvoiceForm: React.FC<AddInvoiceFormProps> = ({
                 <p className="text-sm text-muted-foreground">No services added yet</p>
               )}
             </div>
-            
+
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <FormField
                 control={form.control}
@@ -206,21 +207,21 @@ const AddInvoiceForm: React.FC<AddInvoiceFormProps> = ({
                   <FormItem>
                     <FormLabel>Amount*</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="number" 
-                        placeholder="0.00" 
-                        min="0" 
-                        step="0.01" 
-                        {...field} 
+                      <Input
+                        type="number"
+                        placeholder="0.00"
+                        min="0"
+                        step="0.01"
+                        {...field}
                         onChange={(e) => field.onChange(parseFloat(e.target.value))}
-                        required 
+                        required
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
+
               <FormField
                 control={form.control}
                 name="paymentStatus"
@@ -248,7 +249,7 @@ const AddInvoiceForm: React.FC<AddInvoiceFormProps> = ({
                 )}
               />
             </div>
-            
+
             <FormField
               control={form.control}
               name="insuranceDetails"
@@ -256,17 +257,17 @@ const AddInvoiceForm: React.FC<AddInvoiceFormProps> = ({
                 <FormItem>
                   <FormLabel>Insurance Details</FormLabel>
                   <FormControl>
-                    <Textarea 
-                      placeholder="Enter insurance details" 
-                      className="resize-none min-h-[80px]" 
-                      {...field} 
+                    <Textarea
+                      placeholder="Enter insurance details"
+                      className="resize-none min-h-[80px]"
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            
+
             <DialogFooter className="pt-4">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Cancel

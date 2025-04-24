@@ -35,8 +35,7 @@ const Login = () => {
     <div className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
       <div className="w-full max-w-md space-y-4">
         <div className="text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-primary">CareWave</h1>
-          <p className="text-sm text-muted-foreground">Hospital Management System</p>
+          <h1 className="text-3xl font-bold tracking-tight text-primary">CareWave Clinic Management System</h1>
         </div>
 
         <Card>
